@@ -3,98 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✮ Syafizam Photobooth Premium ✮</title>
+    <title>✮ Syafizam Premium Photobooth ✮</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --accent: #ff79c6;
-            --dark: #0b0b0e;
-            --glass: rgba(255, 255, 255, 0.1);
+            --primary: #ff79c6;
+            --secondary: #bd93f9;
+            --dark: #0f0f15;
+            --darker: #0a0a0e;
+            --light: #f8f8f2;
+            --accent-glow: rgba(255, 121, 198, 0.3);
+            --glass: rgba(255, 255, 255, 0.07);
+            --glass-border: rgba(255, 255, 255, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--dark);
-            color: white;
-            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #1a1a25 100%);
+            color: var(--light);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
 
-        /* Dekorasi Bintang & Simbol */
-        .decor-top { font-size: 24px; margin-bottom: 10px; color: var(--accent); }
+        /* Background decoration */
+        .bg-decoration {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
 
+        .bg-element {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.03);
+            font-size: 30px;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-1000px) rotate(360deg); }
+        }
+
+        /* Header styling */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .decor-top {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--primary);
+            letter-spacing: 10px;
+        }
+
+        .title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #aaa;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-top: 5px;
+        }
+
+        /* Main card styling */
         .main-card {
             background: var(--glass);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255,255,255,0.2);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
             border-radius: 30px;
-            padding: 25px;
+            padding: 30px;
             width: 100%;
-            max-width: 500px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            max-width: 600px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
             position: relative;
+            overflow: hidden;
+            z-index: 2;
+            margin-bottom: 30px;
+        }
+
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 30px 30px 0 0;
+        }
+
+        /* Video container */
+        .video-container {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            margin-bottom: 25px;
+            background: #000;
         }
 
         video {
             width: 100%;
+            display: block;
             border-radius: 20px;
-            transform: scaleX(-1);
-            background: #000;
+            transform: scaleX(-1); /* Mirror effect for front camera */
         }
 
         #timer {
             position: absolute;
-            top: 40%; left: 50%;
+            top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 100px; font-weight: 800;
-            color: var(--accent);
-            text-shadow: 0 0 20px rgba(0,0,0,0.8);
+            font-size: 120px;
+            font-weight: 800;
+            color: var(--primary);
+            text-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
             display: none;
             z-index: 5;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
         }
 
         /* Customization UI */
         .ui-panel {
-            margin-top: 20px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 20px;
         }
 
-        .input-group { text-align: left; }
-        label { font-size: 12px; color: #aaa; margin-left: 10px; }
-        
+        .input-group {
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            color: #ccc;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
         input[type="text"] {
             width: 100%;
-            padding: 12px;
-            background: rgba(0,0,0,0.3);
-            border: 1px solid var(--accent);
-            border-radius: 10px;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
             color: white;
-            box-sizing: border-box;
-            margin-top: 5px;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
         }
 
-        .btn-row { display: flex; gap: 10px; justify-content: center; }
-        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
         .opt-btn {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: white; padding: 8px 15px;
-            border-radius: 20px; cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ddd;
+            padding: 12px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            flex: 1;
         }
 
-        .opt-btn.active { background: var(--accent); border-color: var(--accent); }
+        .opt-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .opt-btn.active {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 121, 198, 0.3);
+        }
 
         #snap-btn {
-            background: linear-gradient(45deg, var(--accent), #bd93f9);
-            border: none; padding: 15px;
-            border-radius: 15px; color: white;
-            font-weight: bold; font-size: 1rem;
-            cursor: pointer; margin-top: 10px;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none;
+            padding: 18px 30px;
+            border-radius: 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-top: 10px;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(255, 121, 198, 0.2);
+        }
+
+        #snap-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(255, 121, 198, 0.3);
+        }
+
+        #snap-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         /* Result Preview */
@@ -103,88 +263,264 @@
             display: none;
             flex-direction: column;
             align-items: center;
+            width: 100%;
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .result-title {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
         .strip-frame {
-            background: white; /* Background frame putih macam gambar kau bagi */
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            margin-bottom: 20px;
+            background: var(--darker);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            width: 100%;
         }
 
-        canvas { max-width: 100%; height: auto; }
+        .strip-frame::before {
+            content: '✮♡♥︎♪♫♬';
+            position: absolute;
+            top: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.1);
+            letter-spacing: 10px;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 15px;
+        }
 
         .dl-btn {
-            background: #50fa7b; color: #000;
-            padding: 15px 40px; border-radius: 50px;
-            border: none; font-weight: 800; cursor: pointer;
+            background: linear-gradient(45deg, #50fa7b, #37d67a);
+            color: #000;
+            padding: 18px 50px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(80, 250, 123, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dl-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(80, 250, 123, 0.3);
+        }
+
+        .watermark {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 14px;
+            font-style: italic;
+            z-index: 1;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.8rem;
+            }
+            
+            .main-card {
+                padding: 20px;
+                max-width: 95%;
+            }
+            
+            .opt-btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+            
+            #timer {
+                font-size: 80px;
+            }
+            
+            .result-title {
+                font-size: 2.2rem;
+            }
+            
+            .strip-frame {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 2.2rem;
+            }
+            
+            .decor-top {
+                font-size: 24px;
+                letter-spacing: 5px;
+            }
+            
+            .btn-row {
+                flex-direction: column;
+            }
+            
+            .dl-btn {
+                padding: 15px 30px;
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Background decorative elements -->
+    <div class="bg-decoration" id="bgDecoration"></div>
 
-    <div class="decor-top">✮♡♥︎♪♫♬</div>
-    <h2 style="margin-top: 0;">Syafizam Premium Booth</h2>
+    <!-- Header -->
+    <div class="header">
+        <div class="decor-top">✮♡♥︎♪♫♬✯✰</div>
+        <h1 class="title">Syafizam Photobooth</h1>
+        <div class="subtitle">CAPTURE YOUR PRECIOUS MOMENTS</div>
+    </div>
 
+    <!-- Main card -->
     <div class="main-card">
-        <video id="video" autoplay playsinline></video>
-        <div id="timer">3</div>
+        <div class="video-container">
+            <video id="video" autoplay playsinline></video>
+            <div id="timer">3</div>
+        </div>
 
         <div class="ui-panel">
             <div class="input-group">
-                <label>Tulis Tajuk Anda (Edit Text):</label>
-                <input type="text" id="userText" placeholder="Contoh: My Lovely Moment">
+                <label><i class="fas fa-edit"></i> TAJUK FOTOSTORY ANDA:</label>
+                <input type="text" id="userText" placeholder="cth: Momen Manis Bersamamu ♥︎" value="Momen Manis Bersamamu ♥︎">
             </div>
 
             <div class="input-group">
-                <label>Bilangan Gambar:</label>
+                <label><i class="fas fa-images"></i> BILANGAN GAMBAR:</label>
                 <div class="btn-row">
-                    <button class="opt-btn" onclick="setCount(2)">2</button>
-                    <button class="opt-btn active" onclick="setCount(3)">3</button>
-                    <button class="opt-btn" onclick="setCount(4)">4</button>
+                    <button class="opt-btn" onclick="setCount(2)">2 GAMBAR</button>
+                    <button class="opt-btn active" onclick="setCount(3)">3 GAMBAR</button>
+                    <button class="opt-btn" onclick="setCount(4)">4 GAMBAR</button>
                 </div>
             </div>
 
-            <button id="snap-btn">START SESSION 📸</button>
+            <button id="snap-btn">📸 MULA SESSI FOTO 📸</button>
         </div>
     </div>
 
+    <!-- Result section -->
     <div class="result-container" id="resultArea">
-        <h3 style="color: var(--accent);">✮ Preview Hasil ✮</h3>
+        <h2 class="result-title">✧ HASIL FOTOSTORY ANDA ✧</h2>
         <div class="strip-frame">
             <canvas id="stripCanvas"></canvas>
         </div>
-        <button class="dl-btn" id="dlBtn">DOWNLOAD HD IMAGE 📥</button>
+        <button class="dl-btn" id="dlBtn">
+            <span>📥 MUAT TURUN IMEJ HD</span>
+        </button>
     </div>
 
+    <!-- Watermark -->
+    <div class="watermark">created with love by Syafizam ♥︎</div>
+
     <script>
+        // Generate background decorative elements
+        const bgDecoration = document.getElementById('bgDecoration');
+        const symbols = ['✮', '♡', '♥︎', '✯', '✰', '♪', '♫', '♬', '★', '☆'];
+        
+        for (let i = 0; i < 40; i++) {
+            const element = document.createElement('div');
+            element.className = 'bg-element';
+            element.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+            element.style.left = `${Math.random() * 100}%`;
+            element.style.top = `${Math.random() * 100}%`;
+            element.style.fontSize = `${Math.random() * 25 + 15}px`;
+            element.style.animationDuration = `${Math.random() * 30 + 20}s`;
+            element.style.animationDelay = `${Math.random() * 5}s`;
+            bgDecoration.appendChild(element);
+        }
+
+        // DOM elements
         const video = document.getElementById('video');
         const timerEl = document.getElementById('timer');
         const snapBtn = document.getElementById('snap-btn');
         const userText = document.getElementById('userText');
         const resultArea = document.getElementById('resultArea');
         const stripCanvas = document.getElementById('stripCanvas');
+        const dlBtn = document.getElementById('dlBtn');
 
         let shotCount = 3;
         let photos = [];
+        let isCapturing = false;
 
-        // Camera High Res
-        navigator.mediaDevices.getUserMedia({ video: { width: 1920, height: 1080 } })
-            .then(s => video.srcObject = s);
+        // Initialize front camera with high resolution
+        async function initCamera() {
+            try {
+                const constraints = {
+                    video: {
+                        width: { ideal: 1920 },
+                        height: { ideal: 1080 },
+                        facingMode: "user" // Use front camera
+                    }
+                };
+                
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                video.srcObject = stream;
+                
+                // Ensure video plays
+                video.onloadedmetadata = () => {
+                    video.play();
+                };
+            } catch (error) {
+                console.error("Error accessing camera:", error);
+                alert("Tidak dapat mengakses kamera. Sila pastikan anda memberikan kebenaran akses kamera.");
+            }
+        }
 
+        // Set photo count
         function setCount(n) {
             shotCount = n;
             document.querySelectorAll('.opt-btn').forEach(b => {
-                b.classList.toggle('active', b.innerText == n);
+                b.classList.toggle('active', b.innerText.includes(n.toString()));
             });
         }
 
+        // Capture photos
         snapBtn.onclick = async () => {
+            if (isCapturing) return;
+            
             photos = [];
             resultArea.style.display = 'none';
             snapBtn.disabled = true;
+            isCapturing = true;
+            
+            // Change button text during capture
+            const originalText = snapBtn.innerHTML;
+            snapBtn.innerHTML = "SEDANG MENGAMBIL GAMBAR...";
 
             for (let i = 0; i < shotCount; i++) {
+                // Show countdown timer
                 timerEl.style.display = 'block';
                 for (let c = 3; c > 0; c--) {
                     timerEl.innerText = c;
@@ -192,81 +528,152 @@
                 }
                 timerEl.style.display = 'none';
 
-                // Capture Frame
-                const temp = document.createElement('canvas');
-                temp.width = video.videoWidth;
-                temp.height = video.videoHeight;
-                const tCtx = temp.getContext('2d');
-                tCtx.translate(temp.width, 0);
-                tCtx.scale(-1, 1);
-                tCtx.drawImage(video, 0, 0);
-                photos.push(temp.toDataURL('image/jpeg', 1.0));
+                // Capture frame from video
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = video.videoWidth;
+                tempCanvas.height = video.videoHeight;
+                const ctx = tempCanvas.getContext('2d');
                 
-                await new Promise(r => setTimeout(r, 600));
+                // Mirror image for front camera
+                ctx.translate(tempCanvas.width, 0);
+                ctx.scale(-1, 1);
+                ctx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
+                
+                // Add to photos array with high quality
+                photos.push(tempCanvas.toDataURL('image/jpeg', 0.95));
+                
+                // Brief pause between shots
+                await new Promise(r => setTimeout(r, 500));
             }
-            drawStrip();
+            
+            // Restore button text and enable it
+            snapBtn.innerHTML = originalText;
             snapBtn.disabled = false;
+            isCapturing = false;
+            
+            // Draw the final strip
+            drawStrip();
         };
 
+        // Draw the photo strip
         function drawStrip() {
             const ctx = stripCanvas.getContext('2d');
-            const w = 800; // Lebar gambar (HD)
-            const h = 600; // Tinggi gambar
-            const pad = 40; // Ruang putih antara gambar
-            const header = 150; // Ruang untuk teks atas
-            const footer = 100; // Ruang untuk watermark
-
-            stripCanvas.width = w + (pad * 2);
-            stripCanvas.height = (h * shotCount) + (pad * (shotCount + 1)) + header + footer;
-
-            // Background Putih Bersih
-            ctx.fillStyle = "white";
-            ctx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
-
-            // Lukis Header Text (User Input)
-            ctx.fillStyle = "black";
-            const title = userText.value || "✮ My Photo Story ✮";
-            ctx.font = "bold 45px 'Arial'";
-            ctx.textAlign = "center";
-            ctx.fillText(title, stripCanvas.width / 2, 80);
+            const padding = 40;
+            const spacing = 30;
+            const headerHeight = 180;
+            const footerHeight = 120;
             
-            ctx.font = "24px 'Arial'";
-            ctx.fillText("✮♡♥︎♪♫♬", stripCanvas.width / 2, 120);
-
-            let loaded = 0;
-            photos.forEach((src, i) => {
+            // Calculate image dimensions (maintain aspect ratio)
+            const imgWidth = 700;
+            const imgHeight = 500;
+            
+            // Set canvas dimensions
+            stripCanvas.width = imgWidth + (padding * 2);
+            stripCanvas.height = headerHeight + (imgHeight * shotCount) + (spacing * (shotCount - 1)) + footerHeight + padding;
+            
+            // Draw black background with subtle pattern
+            ctx.fillStyle = "#0a0a0e";
+            ctx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
+            
+            // Add decorative background pattern
+            ctx.fillStyle = "rgba(255, 255, 255, 0.02)";
+            ctx.font = "30px Arial";
+            ctx.textAlign = "center";
+            
+            for (let i = 0; i < 10; i++) {
+                for (let j = 0; j < 5; j++) {
+                    const symbol = symbols[Math.floor(Math.random() * symbols.length)];
+                    ctx.fillText(symbol, i * 80 + 40, j * 100 + 50);
+                }
+            }
+            
+            // Draw header with user text
+            const title = userText.value || "Momen Manis Bersamamu ♥︎";
+            
+            // Draw decorative header background
+            ctx.fillStyle = "rgba(255, 121, 198, 0.1)";
+            roundRect(ctx, padding/2, 20, stripCanvas.width - padding, headerHeight - 40, 25);
+            ctx.fill();
+            
+            // Draw title
+            ctx.fillStyle = "#ff79c6";
+            ctx.font = "bold 42px 'Dancing Script', cursive";
+            ctx.textAlign = "center";
+            ctx.fillText(title, stripCanvas.width / 2, 90);
+            
+            // Draw subtitle
+            ctx.fillStyle = "#bd93f9";
+            ctx.font = "24px 'Poppins', sans-serif";
+            ctx.fillText("✮♡♥︎♪♫♬✯✰", stripCanvas.width / 2, 140);
+            
+            // Draw each photo
+            let loadedImages = 0;
+            
+            photos.forEach((src, index) => {
                 const img = new Image();
                 img.onload = () => {
-                    const y = header + pad + (i * (h + pad));
+                    const yPos = headerHeight + (index * (imgHeight + spacing));
                     
-                    // Draw image with rounded corners effect using clip
+                    // Draw photo with rounded corners and border
                     ctx.save();
-                    roundRect(ctx, pad, y, w, h, 20); // 20px radius
+                    
+                    // Create rounded clipping path
+                    roundRect(ctx, padding, yPos, imgWidth, imgHeight, 25);
                     ctx.clip();
-                    ctx.drawImage(img, pad, y, w, h);
+                    
+                    // Draw the image
+                    ctx.drawImage(img, padding, yPos, imgWidth, imgHeight);
                     ctx.restore();
-
-                    // Stickers on corners
-                    ctx.font = "40px Arial";
-                    ctx.fillText("♥︎", pad + 40, y + 50); // Top left
-                    ctx.fillText("✮", pad + w - 40, y + h - 20); // Bottom right
-
-                    loaded++;
-                    if (loaded === shotCount) {
-                        // Watermark Syafizam
-                        ctx.fillStyle = "#888";
-                        ctx.font = "italic 22px Arial";
-                        ctx.fillText("created by Syafizam♥︎", stripCanvas.width / 2, stripCanvas.height - 40);
+                    
+                    // Add decorative border
+                    ctx.strokeStyle = "rgba(255, 121, 198, 0.5)";
+                    ctx.lineWidth = 4;
+                    roundRect(ctx, padding, yPos, imgWidth, imgHeight, 25);
+                    ctx.stroke();
+                    
+                    // Add decorative corner elements
+                    ctx.fillStyle = "#ff79c6";
+                    ctx.font = "36px Arial";
+                    ctx.fillText("♥︎", padding + 30, yPos + 50);
+                    ctx.fillText("✮", padding + imgWidth - 30, yPos + imgHeight - 20);
+                    
+                    // Add individual watermark for each image
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+                    ctx.font = "italic 16px 'Poppins', sans-serif";
+                    ctx.fillText("created by syafizam", padding + imgWidth - 120, yPos + imgHeight - 25);
+                    
+                    loadedImages++;
+                    
+                    // When all images are loaded, show result and add footer
+                    if (loadedImages === shotCount) {
+                        // Draw footer
+                        ctx.fillStyle = "rgba(189, 147, 249, 0.1)";
+                        roundRect(ctx, padding/2, stripCanvas.height - footerHeight + 20, stripCanvas.width - padding, footerHeight - 40, 25);
+                        ctx.fill();
                         
+                        // Draw footer text
+                        ctx.fillStyle = "#bd93f9";
+                        ctx.font = "italic 20px 'Poppins', sans-serif";
+                        ctx.textAlign = "center";
+                        ctx.fillText("Kenangan ini akan kekal abadi di hati", stripCanvas.width / 2, stripCanvas.height - 60);
+                        
+                        ctx.fillStyle = "#ff79c6";
+                        ctx.font = "bold 24px 'Dancing Script', cursive";
+                        ctx.fillText("Syafizam Photobooth Premium", stripCanvas.width / 2, stripCanvas.height - 30);
+                        
+                        // Show result area
                         resultArea.style.display = 'flex';
-                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                        window.scrollTo({
+                            top: resultArea.offsetTop - 50,
+                            behavior: 'smooth'
+                        });
                     }
                 };
                 img.src = src;
             });
         }
 
-        // Helper untuk rounded corners
+        // Helper function for rounded rectangles
         function roundRect(ctx, x, y, width, height, radius) {
             ctx.beginPath();
             ctx.moveTo(x + radius, y);
@@ -281,12 +688,27 @@
             ctx.closePath();
         }
 
-        document.getElementById('dlBtn').onclick = () => {
+        // Download functionality
+        dlBtn.onclick = () => {
             const link = document.createElement('a');
-            link.download = `SyafizamBooth_${Date.now()}.png`;
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            link.download = `Syafizam_Photobooth_${timestamp}.png`;
             link.href = stripCanvas.toDataURL('image/png', 1.0);
             link.click();
+            
+            // Show temporary feedback
+            const originalText = dlBtn.innerHTML;
+            dlBtn.innerHTML = "✓ BERJAYA DIMUAT TURUN!";
+            dlBtn.style.background = "linear-gradient(45deg, #37d67a, #50fa7b)";
+            
+            setTimeout(() => {
+                dlBtn.innerHTML = originalText;
+                dlBtn.style.background = "linear-gradient(45deg, #50fa7b, #37d67a)";
+            }, 2000);
         };
+
+        // Initialize camera when page loads
+        window.addEventListener('DOMContentLoaded', initCamera);
     </script>
 </body>
 </html>
