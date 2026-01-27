@@ -1,741 +1,173 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Photoboth - Capture Your Best Moment With Us!</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        :root {
-            --black: #0a0a0a;
-            --white: #f5f5f5;
-            --gray-dark: #1a1a1a;
-            --gray-light: #333;
-            --accent: #ffffff;
-            --pink-accent: #ff79c6;
-        }
-        
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--black);
-            color: var(--white);
-            line-height: 1.6;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        /* Header & Title */
-        .decor-top {
-            font-size: 28px;
-            margin-bottom: 10px;
-            color: var(--pink-accent);
-            letter-spacing: 5px;
-        }
-        
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #fff, #ccc);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-align: center;
-        }
-        
-        .tagline {
-            font-size: 1.2rem;
-            font-weight: 300;
-            color: #aaa;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        /* Main Card */
-        .main-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            padding: 30px;
-            width: 100%;
-            max-width: 800px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            position: relative;
-            margin-bottom: 30px;
-            overflow: hidden;
-        }
-        
-        /* Background decorations */
-        .bg-decorations {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.1;
-        }
-        
-        .bg-deco-item {
-            position: absolute;
-            font-size: 24px;
-            color: var(--white);
-            animation: float 20s infinite linear;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-1000px) rotate(360deg); }
-        }
-        
-        /* Camera View */
-        .camera-container {
-            width: 100%;
-            border-radius: 15px;
-            overflow: hidden;
-            background-color: #000;
-            margin-bottom: 25px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        #videoElement {
-            width: 100%;
-            height: auto;
-            display: block;
-            transform: scaleX(-1); /* Mirror effect for selfie */
-        }
-        
-        #timer {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 100px;
-            font-weight: 800;
-            color: var(--pink-accent);
-            text-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
-            display: none;
-            z-index: 10;
-        }
-        
-        /* Controls */
-        .controls-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .control-group {
-            text-align: left;
-        }
-        
-        .control-label {
-            display: block;
-            font-size: 14px;
-            color: #aaa;
-            margin-bottom: 8px;
-            margin-left: 5px;
-        }
-        
-        .text-input {
-            width: 100%;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--pink-accent);
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        
-        .text-input::placeholder {
-            color: #888;
-        }
-        
-        .photo-count-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-        
-        .count-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            flex: 1;
-            max-width: 120px;
-        }
-        
-        .count-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-        
-        .count-btn.active {
-            background: var(--pink-accent);
-            border-color: var(--pink-accent);
-            color: var(--black);
-        }
-        
-        /* Capture Button */
-        .capture-btn {
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(45deg, var(--pink-accent), #bd93f9);
-            border: none;
-            border-radius: 15px;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .capture-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(255, 121, 198, 0.3);
-        }
-        
-        .capture-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        
-        .capture-btn i {
-            margin-right: 10px;
-        }
-        
-        /* Result Preview */
-        .result-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 800px;
-            margin-top: 30px;
-            animation: fadeIn 0.8s ease;
-            position: relative;
-            z-index: 1;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .result-title {
-            color: var(--pink-accent);
-            font-size: 2rem;
-            margin-bottom: 20px;
-            text-align: center;
-            font-family: 'Playfair Display', serif;
-        }
-        
-        .strip-frame {
-            background: var(--black);
-            border: 2px solid var(--pink-accent);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
-            margin-bottom: 25px;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .strip-bg-decorations {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.07;
-        }
-        
-        .strip-deco-item {
-            position: absolute;
-            font-size: 24px;
-            color: var(--white);
-        }
-        
-        #stripCanvas {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
-            position: relative;
-            z-index: 1;
-        }
-        
-        .download-btn {
-            background: linear-gradient(45deg, #50fa7b, #8be9fd);
-            color: #000;
-            padding: 18px 50px;
-            border-radius: 50px;
-            border: none;
-            font-weight: 800;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-        
-        .download-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(80, 250, 123, 0.3);
-        }
-        
-        .download-btn i {
-            margin-right: 10px;
-        }
-        
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 20px 0;
-            color: #888;
-            font-size: 0.9rem;
-            margin-top: 30px;
-            width: 100%;
-            border-top: 1px solid var(--gray-light);
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2.2rem;
-            }
-            
-            .tagline {
-                font-size: 1rem;
-            }
-            
-            .main-card {
-                padding: 20px;
-            }
-            
-            .decor-top {
-                font-size: 22px;
-            }
-            
-            #timer {
-                font-size: 80px;
-            }
-            
-            .count-btn {
-                padding: 10px 15px;
-                font-size: 14px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            body {
-                padding: 15px;
-            }
-            
-            .main-card {
-                padding: 15px;
-            }
-            
-            .photo-count-buttons {
-                flex-wrap: wrap;
-            }
-            
-            .count-btn {
-                flex: 1 0 calc(50% - 10px);
-                max-width: none;
-            }
-            
-            #timer {
-                font-size: 60px;
-            }
-        }
-    </style>
+    <title>⋆. 𐙚 ̊ Cania Photobooth ⋆. 𐙚 ̊</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <!-- Decorative Elements -->
-    <div class="decor-top">✮ ♡ ♥︎ ♪ ♫ ♬ ✯ ✰</div>
-    
-    <!-- Main Title -->
-    <h1>E-Photoboth</h1>
-    <p class="tagline">Capture your best moment with us!</p>
-    
-    <!-- Main Card with Camera and Controls -->
-    <div class="main-card">
-        <!-- Background Decorations -->
-        <div class="bg-decorations" id="bgDecorations"></div>
-        
-        <!-- Camera View -->
-        <div class="camera-container">
-            <video id="videoElement" autoplay playsinline></video>
-            <div id="timer">3</div>
-        </div>
-        
-        <!-- Controls Panel -->
-        <div class="controls-panel">
-            <!-- Text Input -->
-            <div class="control-group">
-                <label class="control-label">Add Text to Your Photos:</label>
-                <input type="text" class="text-input" id="photoText" placeholder="Example: My Best Moment ✨" maxlength="40">
+    <div class="container">
+        <!-- Left Side: Camera -->
+        <div class="left-side">
+            <div class="title">
+                <h1>⋆. 𐙚 ̊ Cania Photobooth ⋆. 𐙚 ̊</h1>
             </div>
-            
-            <!-- Photo Count Selection -->
-            <div class="control-group">
-                <label class="control-label">Select Number of Photos:</label>
-                <div class="photo-count-buttons">
-                    <button class="count-btn" data-count="2">2 Photos</button>
-                    <button class="count-btn active" data-count="3">3 Photos</button>
-                    <button class="count-btn" data-count="4">4 Photos</button>
+
+            <div class="video-container">
+                <video id="video" autoplay></video>
+                <canvas id="overlay-canvas"></canvas>
+                <div id="countdown-display"></div>
+                <div id="flash"></div>
+            </div>
+
+            <!-- Controls -->
+            <div class="controls-section">
+                <!-- Frame Selection -->
+                <div class="control-group">
+                    <label>📸 Jumlah Foto</label>
+                    <div class="frame-options">
+                        <button class="frame-btn" data-frames="3">3 Foto</button>
+                        <button class="frame-btn active" data-frames="4">4 Foto</button>
+                        <button class="frame-btn" data-frames="6">6 Foto</button>
+                    </div>
+                </div>
+
+                <!-- Filter Selection -->
+                <div class="control-group">
+                    <label>🎨 Filter</label>
+                    <div class="filter-options">
+                        <button class="filter-btn active" data-filter="none">Normal</button>
+                        <button class="filter-btn" data-filter="grayscale">B&W</button>
+                        <button class="filter-btn" data-filter="sepia">Sepia</button>
+                        <button class="filter-btn" data-filter="vintage">Vintage</button>
+                        <button class="filter-btn" data-filter="warm">Warm</button>
+                    </div>
+                </div>
+
+                <!-- Timer -->
+                <div class="control-group timer-group">
+                    <label>⏰ Timer</label>
+                    <div class="timer-input-group">
+                        <input type="number" min="0" max="10" placeholder="3" id="timer" value="3">
+                        <span>detik</span>
+                    </div>
+                </div>
+
+                <!-- Capture Button -->
+                <button id="capture-btn" class="capture-button">
+                    <span class="btn-icon">📸</span>
+                    <span class="btn-text">Ambil Foto</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Right Side: Preview (Hidden initially) -->
+        <div class="right-side" id="right-side">
+            <div class="preview-section">
+                <div class="preview-header">
+                    <h2>Preview Foto</h2>
+                </div>
+
+                <!-- Customization Options -->
+                <div class="customization-section">
+                    <!-- Frame Template Selection -->
+                    <div class="custom-group">
+                        <label>🖼️ Pilih Template</label>
+                        <div class="frame-templates-grid">
+                            <button class="template-btn active" data-template="classic">
+                                <div class="template-preview classic-preview"></div>
+                                <span>Black</span>
+                            </button>
+                            <button class="template-btn" data-template="retro">
+                                <div class="template-preview retro-preview"></div>
+                                <span>Maroon</span>
+                            </button>
+                            <button class="template-btn" data-template="checkerboard">
+                                <div class="template-preview checker-preview"></div>
+                                <span>Navy</span>
+                            </button>
+                            <button class="template-btn" data-template="rainbow">
+                                <div class="template-preview rainbow-preview"></div>
+                                <span>Navy Blue</span>
+                            </button>
+                            <button class="template-btn" data-template="polaroid">
+                                <div class="template-preview polaroid-preview"></div>
+                                <span>White</span>
+                            </button>
+                            <button class="template-btn" data-template="hearts">
+                                <div class="template-preview hearts-preview"></div>
+                                <span>Burgundy</span>
+                            </button>
+                            <button class="template-btn" data-template="stars">
+                                <div class="template-preview stars-preview"></div>
+                                <span>Dark Navy</span>
+                            </button>
+                            <button class="template-btn" data-template="flowers">
+                                <div class="template-preview flowers-preview"></div>
+                                <span>Gray</span>
+                            </button>
+                            <button class="template-btn" data-template="doodle">
+                                <div class="template-preview doodle-preview"></div>
+                                <span>White Frame</span>
+                            </button>
+                            <button class="template-btn" data-template="minimal">
+                                <div class="template-preview minimal-preview"></div>
+                                <span>Minimal</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Background Color Selection -->
+                    <div class="custom-group">
+                        <label>🎨 Warna Background Strip</label>
+                        <div class="bg-color-options">
+                            <button class="bg-color-btn active" data-bg="black" style="background: #000000;" title="Black"></button>
+                            <button class="bg-color-btn" data-bg="white" style="background: #FFFFFF; border-color: #666;" title="White"></button>
+                            <button class="bg-color-btn" data-bg="navy" style="background: #1a1a2e;" title="Navy"></button>
+                            <button class="bg-color-btn" data-bg="maroon" style="background: #800020;" title="Maroon"></button>
+                            <button class="bg-color-btn" data-bg="burgundy" style="background: #6B1515;" title="Burgundy"></button>
+                            <button class="bg-color-btn" data-bg="charcoal" style="background: #36454F;" title="Charcoal"></button>
+                            <button class="bg-color-btn" data-bg="forest" style="background: #2C5F2D;" title="Forest Green"></button>
+                            <button class="bg-color-btn" data-bg="midnight" style="background: #191970;" title="Midnight Blue"></button>
+                        </div>
+                    </div>
+
+                    <!-- Decoration & Character Selection -->
+                    <div class="custom-group">
+                        <label>✨ Hiasan & Karakter Dekoratif</label>
+                        <div class="decoration-options">
+                            <button class="deco-btn active" data-deco="none">Tanpa Hiasan</button>
+                            <button class="deco-btn" data-deco="butterflies">🦋 Kupu-kupu</button>
+                            <button class="deco-btn" data-deco="sparkles">✨ Sparkles</button>
+                            <button class="deco-btn" data-deco="stickers">🌈 Stickers</button>
+                            <button class="deco-btn" data-deco="music">⋆.˚ ✮ 🎧</button>
+                            <button class="deco-btn" data-deco="cute">𐙚 ⋆.˚</button>
+                            <button class="deco-btn" data-deco="spider">🕷️ 🕸 ✮</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-main">
+                    <canvas id="preview-canvas"></canvas>
+                </div>
+                <div class="preview-thumbnails" id="photo-grid"></div>
+                <div class="preview-actions">
+                    <button class="btn-retake" id="btn-retake">
+                        <span>🔄 Retake Semua</span>
+                    </button>
+                    <button class="btn-save" id="btn-save">
+                        <span>💾 Save Foto</span>
+                    </button>
                 </div>
             </div>
-            
-            <!-- Capture Button -->
-            <button class="capture-btn" id="captureBtn">
-                <i class="fas fa-camera"></i> START PHOTO SESSION
-            </button>
         </div>
     </div>
-    
-    <!-- Result Preview Section -->
-    <div class="result-container" id="resultContainer">
-        <h2 class="result-title">✮ Your Photo Preview ✮</h2>
-        <div class="strip-frame">
-            <!-- Background decorations for result -->
-            <div class="strip-bg-decorations" id="stripBgDecorations"></div>
-            <canvas id="stripCanvas"></canvas>
-        </div>
-        <button class="download-btn" id="downloadBtn">
-            <i class="fas fa-download"></i> DOWNLOAD HD IMAGE
-        </button>
-    </div>
-    
-    <!-- Footer -->
-    <footer>
-        <p>E-Photoboth &copy; 2023 | Capture your best moment with us!</p>
-        <p style="margin-top: 5px; font-size: 0.8rem;">Created by syafizam with <i class="fas fa-heart" style="color: #ff4757;"></i></p>
-    </footer>
 
-    <script>
-        // DOM Elements
-        const videoElement = document.getElementById('videoElement');
-        const timerEl = document.getElementById('timer');
-        const captureBtn = document.getElementById('captureBtn');
-        const photoTextInput = document.getElementById('photoText');
-        const resultContainer = document.getElementById('resultContainer');
-        const stripCanvas = document.getElementById('stripCanvas');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const countButtons = document.querySelectorAll('.count-btn');
-        const bgDecorations = document.getElementById('bgDecorations');
-        const stripBgDecorations = document.getElementById('stripBgDecorations');
-        
-        // State variables
-        let shotCount = 3;
-        let photos = [];
-        let stream = null;
-        
-        // Generate random background decorations
-        function generateDecorations(container, count, sizeMin, sizeMax, opacity) {
-            const symbols = ['✮', '✰', '✯', '♡', '♥︎', '♫', '♬', '♪', '★', '☆', '✦', '✧'];
-            container.innerHTML = '';
-            
-            for (let i = 0; i < count; i++) {
-                const deco = document.createElement('div');
-                deco.className = container.id === 'bgDecorations' ? 'bg-deco-item' : 'strip-deco-item';
-                deco.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-                deco.style.left = `${Math.random() * 100}%`;
-                deco.style.top = `${Math.random() * 100}%`;
-                deco.style.fontSize = `${Math.random() * (sizeMax - sizeMin) + sizeMin}px`;
-                deco.style.opacity = opacity;
-                deco.style.transform = `rotate(${Math.random() * 360}deg)`;
-                container.appendChild(deco);
-            }
-        }
-        
-        // Initialize decorations
-        generateDecorations(bgDecorations, 15, 20, 40, 0.1);
-        
-        // Initialize camera
-        async function initCamera() {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: { 
-                        facingMode: 'user', // Front camera (selfie)
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 }
-                    },
-                    audio: false
-                });
-                
-                videoElement.srcObject = stream;
-            } catch (error) {
-                alert('Unable to access camera. Please make sure you have granted camera permissions.');
-                console.error('Camera error:', error);
-                
-                // Show placeholder if camera fails
-                videoElement.style.backgroundColor = '#111';
-                const errorMsg = document.createElement('div');
-                errorMsg.innerHTML = '<i class="fas fa-camera-slash" style="font-size: 3rem; margin-bottom: 15px;"></i><p>Camera not available</p>';
-                errorMsg.style.textAlign = 'center';
-                errorMsg.style.padding = '50px';
-                errorMsg.style.color = '#888';
-                videoElement.parentNode.appendChild(errorMsg);
-            }
-        }
-        
-        // Initialize camera on page load
-        initCamera();
-        
-        // Photo count selection
-        countButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                countButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                shotCount = parseInt(button.dataset.count);
-            });
-        });
-        
-        // Capture photo session
-        captureBtn.addEventListener('click', async () => {
-            photos = [];
-            resultContainer.style.display = 'none';
-            captureBtn.disabled = true;
-            
-            // Capture multiple photos based on selected count
-            for (let i = 0; i < shotCount; i++) {
-                // Show countdown timer
-                timerEl.style.display = 'block';
-                
-                // Countdown from 3
-                for (let count = 3; count > 0; count--) {
-                    timerEl.textContent = count;
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                }
-                
-                timerEl.style.display = 'none';
-                
-                // Capture photo
-                const canvas = document.createElement('canvas');
-                canvas.width = videoElement.videoWidth;
-                canvas.height = videoElement.videoHeight;
-                const ctx = canvas.getContext('2d');
-                
-                // Flip horizontally for selfie view
-                ctx.translate(canvas.width, 0);
-                ctx.scale(-1, 1);
-                ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-                
-                // Convert to data URL
-                photos.push(canvas.toDataURL('image/jpeg', 0.9));
-                
-                // Short pause between photos
-                await new Promise(resolve => setTimeout(resolve, 600));
-            }
-            
-            // Draw photo strip
-            drawStrip();
-            captureBtn.disabled = false;
-        });
-        
-        // Draw photo strip with dark theme
-        function drawStrip() {
-            const ctx = stripCanvas.getContext('2d');
-            const userText = photoTextInput.value || "My Best Moment ✨";
-            
-            // Canvas dimensions
-            const photoWidth = 700; // Width of each photo
-            const photoHeight = 500; // Height of each photo
-            const padding = 40; // Space around photos
-            const headerHeight = 180; // Space for title and decorations
-            const footerHeight = 100; // Space for watermark
-            
-            // Calculate total canvas size
-            stripCanvas.width = photoWidth + (padding * 2);
-            stripCanvas.height = (photoHeight * shotCount) + (padding * (shotCount + 1)) + headerHeight + footerHeight;
-            
-            // Dark background
-            ctx.fillStyle = "#0a0a0a";
-            ctx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
-            
-            // Draw header with user text
-            ctx.fillStyle = "#f5f5f5";
-            
-            // Main title
-            ctx.font = "bold 50px 'Playfair Display', serif";
-            ctx.textAlign = "center";
-            ctx.fillText("E-Photoboth", stripCanvas.width / 2, 60);
-            
-            // User text
-            ctx.font = "bold 36px 'Poppins', sans-serif";
-            ctx.fillText(userText, stripCanvas.width / 2, 120);
-            
-            // Decorative symbols
-            ctx.font = "28px 'Arial'";
-            const symbols = ["✮", "✰", "✯", "♡", "♥︎", "♫", "♬", "♪"];
-            let symbolsText = "";
-            for (let i = 0; i < 8; i++) {
-                symbolsText += symbols[Math.floor(Math.random() * symbols.length)] + " ";
-            }
-            ctx.fillText(symbolsText, stripCanvas.width / 2, 160);
-            
-            // Track loaded images
-            let loadedImages = 0;
-            
-            // Generate background decorations for strip
-            generateDecorations(stripBgDecorations, 25, 15, 35, 0.07);
-            
-            // Draw each photo
-            photos.forEach((photoSrc, index) => {
-                const img = new Image();
-                img.onload = () => {
-                    // Calculate position for this photo
-                    const yPos = headerHeight + padding + (index * (photoHeight + padding));
-                    
-                    // Draw rounded rectangle for photo frame
-                    ctx.save();
-                    roundRect(ctx, padding, yPos, photoWidth, photoHeight, 15);
-                    ctx.clip();
-                    
-                    // Draw photo with dark border effect
-                    ctx.fillStyle = "#333";
-                    ctx.fillRect(padding - 2, yPos - 2, photoWidth + 4, photoHeight + 4);
-                    
-                    // Draw the actual photo
-                    ctx.drawImage(img, padding, yPos, photoWidth, photoHeight);
-                    ctx.restore();
-                    
-                    // Add decorative elements on corners (random symbols)
-                    ctx.font = "35px Arial";
-                    ctx.fillStyle = "#ff79c6";
-                    
-                    // Random corner decorations
-                    const cornerSymbols = ['✮', '✰', '✯', '♡', '♥︎', '★', '☆'];
-                    
-                    // Top-left decoration
-                    ctx.fillText(
-                        cornerSymbols[Math.floor(Math.random() * cornerSymbols.length)], 
-                        padding + 25, 
-                        yPos + 45
-                    );
-                    
-                    // Top-right decoration
-                    ctx.fillText(
-                        cornerSymbols[Math.floor(Math.random() * cornerSymbols.length)], 
-                        padding + photoWidth - 25, 
-                        yPos + 45
-                    );
-                    
-                    // Bottom-left decoration
-                    ctx.fillText(
-                        cornerSymbols[Math.floor(Math.random() * cornerSymbols.length)], 
-                        padding + 25, 
-                        yPos + photoHeight - 15
-                    );
-                    
-                    // Bottom-right decoration
-                    ctx.fillText(
-                        cornerSymbols[Math.floor(Math.random() * cornerSymbols.length)], 
-                        padding + photoWidth - 25, 
-                        yPos + photoHeight - 15
-                    );
-                    
-                    // Add user text at bottom of each photo if provided
-                    if (userText.trim() !== "") {
-                        ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-                        ctx.font = "bold 28px 'Poppins', sans-serif";
-                        ctx.textAlign = "center";
-                        ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
-                        ctx.shadowBlur = 5;
-                        ctx.fillText(userText, padding + (photoWidth / 2), yPos + photoHeight - 30);
-                        ctx.shadowBlur = 0;
-                    }
-                    
-                    loadedImages++;
-                    
-                    // When all photos are loaded, show result and add watermark
-                    if (loadedImages === shotCount) {
-                        // Add watermark at the bottom
-                        ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
-                        ctx.font = "italic 24px 'Poppins'";
-                        ctx.textAlign = "center";
-                        ctx.fillText("created by syafizam", stripCanvas.width / 2, stripCanvas.height - 40);
-                        
-                        // Show result container
-                        resultContainer.style.display = "flex";
-                        
-                        // Scroll to results
-                        window.scrollTo({
-                            top: resultContainer.offsetTop - 50,
-                            behavior: 'smooth'
-                        });
-                    }
-                };
-                img.src = photoSrc;
-            });
-        }
-        
-        // Helper function for rounded rectangles
-        function roundRect(ctx, x, y, width, height, radius) {
-            ctx.beginPath();
-            ctx.moveTo(x + radius, y);
-            ctx.lineTo(x + width - radius, y);
-            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-            ctx.lineTo(x + width, y + height - radius);
-            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-            ctx.lineTo(x + radius, y + height);
-            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-            ctx.lineTo(x, y + radius);
-            ctx.quadraticCurveTo(x, y, x + radius, y);
-            ctx.closePath();
-        }
-        
-        // Download photo strip
-        downloadBtn.addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.download = `E-Photoboth_${Date.now()}.png`;
-            link.href = stripCanvas.toDataURL('image/png', 1.0);
-            link.click();
-        });
-        
-        // Update photo text in real-time
-        photoTextInput.addEventListener('input', () => {
-            // If we already have photos, update the strip
-            if (photos.length > 0) {
-                drawStrip();
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
-                    </html>
+
+</html>
