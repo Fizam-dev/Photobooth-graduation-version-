@@ -81,7 +81,14 @@ body {
     overflow: hidden;
     }
 
-
+.title h2{
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5em;
+    color: #F2CA46;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
 
 /* VIDEO CONTAINER */
 .video-container {
