@@ -76,6 +76,31 @@
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
             position: relative;
             margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        /* Background decorations */
+        .bg-decorations {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.1;
+        }
+        
+        .bg-deco-item {
+            position: absolute;
+            font-size: 24px;
+            color: var(--white);
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-1000px) rotate(360deg); }
         }
         
         /* Camera View */
@@ -86,6 +111,7 @@
             background-color: #000;
             margin-bottom: 25px;
             position: relative;
+            z-index: 1;
         }
         
         #videoElement {
@@ -113,6 +139,8 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            position: relative;
+            z-index: 1;
         }
         
         .control-group {
@@ -185,6 +213,8 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 10px;
+            position: relative;
+            z-index: 1;
         }
         
         .capture-btn:hover {
@@ -210,6 +240,8 @@
             max-width: 800px;
             margin-top: 30px;
             animation: fadeIn 0.8s ease;
+            position: relative;
+            z-index: 1;
         }
         
         @keyframes fadeIn {
@@ -226,7 +258,8 @@
         }
         
         .strip-frame {
-            background: white;
+            background: var(--black);
+            border: 2px solid var(--pink-accent);
             padding: 25px;
             border-radius: 20px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
@@ -234,16 +267,37 @@
             width: 100%;
             display: flex;
             justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .strip-bg-decorations {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.07;
+        }
+        
+        .strip-deco-item {
+            position: absolute;
+            font-size: 24px;
+            color: var(--white);
         }
         
         #stripCanvas {
             max-width: 100%;
             height: auto;
             border-radius: 10px;
+            position: relative;
+            z-index: 1;
         }
         
         .download-btn {
-            background: #50fa7b;
+            background: linear-gradient(45deg, #50fa7b, #8be9fd);
             color: #000;
             padding: 18px 50px;
             border-radius: 50px;
@@ -341,6 +395,9 @@
     
     <!-- Main Card with Camera and Controls -->
     <div class="main-card">
+        <!-- Background Decorations -->
+        <div class="bg-decorations" id="bgDecorations"></div>
+        
         <!-- Camera View -->
         <div class="camera-container">
             <video id="videoElement" autoplay playsinline></video>
@@ -351,8 +408,8 @@
         <div class="controls-panel">
             <!-- Text Input -->
             <div class="control-group">
-                <label class="control-label">Edit Your Photo Text:</label>
-                <input type="text" class="text-input" id="photoText" placeholder="Example: My Best Moment Ever ✨" maxlength="40">
+                <label class="control-label">Add Text to Your Photos:</label>
+                <input type="text" class="text-input" id="photoText" placeholder="Example: My Best Moment ✨" maxlength="40">
             </div>
             
             <!-- Photo Count Selection -->
@@ -376,6 +433,8 @@
     <div class="result-container" id="resultContainer">
         <h2 class="result-title">✮ Your Photo Preview ✮</h2>
         <div class="strip-frame">
+            <!-- Background decorations for result -->
+            <div class="strip-bg-decorations" id="stripBgDecorations"></div>
             <canvas id="stripCanvas"></canvas>
         </div>
         <button class="download-btn" id="downloadBtn">
@@ -386,7 +445,7 @@
     <!-- Footer -->
     <footer>
         <p>E-Photoboth &copy; 2023 | Capture your best moment with us!</p>
-        <p style="margin-top: 5px; font-size: 0.8rem;">Made with <i class="fas fa-heart" style="color: #ff4757;"></i> for memorable moments</p>
+        <p style="margin-top: 5px; font-size: 0.8rem;">Created by syafizam with <i class="fas fa-heart" style="color: #ff4757;"></i></p>
     </footer>
 
     <script>
@@ -399,11 +458,34 @@
         const stripCanvas = document.getElementById('stripCanvas');
         const downloadBtn = document.getElementById('downloadBtn');
         const countButtons = document.querySelectorAll('.count-btn');
+        const bgDecorations = document.getElementById('bgDecorations');
+        const stripBgDecorations = document.getElementById('stripBgDecorations');
         
         // State variables
         let shotCount = 3;
         let photos = [];
         let stream = null;
+        
+        // Generate random background decorations
+        function generateDecorations(container, count, sizeMin, sizeMax, opacity) {
+            const symbols = ['✮', '✰', '✯', '♡', '♥︎', '♫', '♬', '♪', '★', '☆', '✦', '✧'];
+            container.innerHTML = '';
+            
+            for (let i = 0; i < count; i++) {
+                const deco = document.createElement('div');
+                deco.className = container.id === 'bgDecorations' ? 'bg-deco-item' : 'strip-deco-item';
+                deco.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                deco.style.left = `${Math.random() * 100}%`;
+                deco.style.top = `${Math.random() * 100}%`;
+                deco.style.fontSize = `${Math.random() * (sizeMax - sizeMin) + sizeMin}px`;
+                deco.style.opacity = opacity;
+                deco.style.transform = `rotate(${Math.random() * 360}deg)`;
+                container.appendChild(deco);
+            }
+        }
+        
+        // Initialize decorations
+        generateDecorations(bgDecorations, 15, 20, 40, 0.1);
         
         // Initialize camera
         async function initCamera() {
@@ -487,7 +569,7 @@
             captureBtn.disabled = false;
         });
         
-        // Draw photo strip with decorations
+        // Draw photo strip with dark theme
         function drawStrip() {
             const ctx = stripCanvas.getContext('2d');
             const userText = photoTextInput.value || "My Best Moment ✨";
@@ -495,7 +577,7 @@
             // Canvas dimensions
             const photoWidth = 700; // Width of each photo
             const photoHeight = 500; // Height of each photo
-            const padding = 40; // White space around photos
+            const padding = 40; // Space around photos
             const headerHeight = 180; // Space for title and decorations
             const footerHeight = 100; // Space for watermark
             
@@ -503,12 +585,12 @@
             stripCanvas.width = photoWidth + (padding * 2);
             stripCanvas.height = (photoHeight * shotCount) + (padding * (shotCount + 1)) + headerHeight + footerHeight;
             
-            // Pure white background
-            ctx.fillStyle = "white";
+            // Dark background
+            ctx.fillStyle = "#0a0a0a";
             ctx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
             
             // Draw header with user text
-            ctx.fillStyle = "black";
+            ctx.fillStyle = "#f5f5f5";
             
             // Main title
             ctx.font = "bold 50px 'Playfair Display', serif";
@@ -524,12 +606,15 @@
             const symbols = ["✮", "✰", "✯", "♡", "♥︎", "♫", "♬", "♪"];
             let symbolsText = "";
             for (let i = 0; i < 8; i++) {
-                symbolsText += symbols[i] + " ";
+                symbolsText += symbols[Math.floor(Math.random() * symbols.length)] + " ";
             }
             ctx.fillText(symbolsText, stripCanvas.width / 2, 160);
             
             // Track loaded images
             let loadedImages = 0;
+            
+            // Generate background decorations for strip
+            generateDecorations(stripBgDecorations, 25, 15, 35, 0.07);
             
             // Draw each photo
             photos.forEach((photoSrc, index) => {
@@ -538,39 +623,74 @@
                     // Calculate position for this photo
                     const yPos = headerHeight + padding + (index * (photoHeight + padding));
                     
-                    // Draw rounded rectangle for photo background
+                    // Draw rounded rectangle for photo frame
                     ctx.save();
                     roundRect(ctx, padding, yPos, photoWidth, photoHeight, 15);
                     ctx.clip();
                     
-                    // Draw the photo
+                    // Draw photo with dark border effect
+                    ctx.fillStyle = "#333";
+                    ctx.fillRect(padding - 2, yPos - 2, photoWidth + 4, photoHeight + 4);
+                    
+                    // Draw the actual photo
                     ctx.drawImage(img, padding, yPos, photoWidth, photoHeight);
                     ctx.restore();
                     
-                    // Add decorative elements on corners
-                    ctx.font = "40px Arial";
-                    ctx.fillStyle = "black";
+                    // Add decorative elements on corners (random symbols)
+                    ctx.font = "35px Arial";
+                    ctx.fillStyle = "#ff79c6";
+                    
+                    // Random corner decorations
+                    const cornerSymbols = ['✮', '✰', '✯', '♡', '♥︎', '★', '☆'];
                     
                     // Top-left decoration
-                    ctx.fillText("♡", padding + 30, yPos + 50);
+                    ctx.fillText(
+                        cornerSymbols[Math.floor(Math.random() * cornerSymbols.length)], 
+                        padding + 25, 
+                        yPos + 45
+                    );
+                    
+                    // Top-right decoration
+                    ctx.fillText(
+                        cornerSymbols[Math.floor(Math.random() * cornerSymbols.length)], 
+                        padding + photoWidth - 25, 
+                        yPos + 45
+                    );
+                    
+                    // Bottom-left decoration
+                    ctx.fillText(
+                        cornerSymbols[Math.floor(Math.random() * cornerSymbols.length)], 
+                        padding + 25, 
+                        yPos + photoHeight - 15
+                    );
                     
                     // Bottom-right decoration
-                    ctx.fillText("✮", padding + photoWidth - 30, yPos + photoHeight - 20);
+                    ctx.fillText(
+                        cornerSymbols[Math.floor(Math.random() * cornerSymbols.length)], 
+                        padding + photoWidth - 25, 
+                        yPos + photoHeight - 15
+                    );
                     
-                    // Photo number indicator
-                    ctx.font = "bold 24px 'Poppins'";
-                    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
-                    ctx.fillText(`Photo ${index + 1}`, padding + 30, yPos + photoHeight - 30);
+                    // Add user text at bottom of each photo if provided
+                    if (userText.trim() !== "") {
+                        ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+                        ctx.font = "bold 28px 'Poppins', sans-serif";
+                        ctx.textAlign = "center";
+                        ctx.shadowColor = "rgba(0, 0, 0, 0.8)";
+                        ctx.shadowBlur = 5;
+                        ctx.fillText(userText, padding + (photoWidth / 2), yPos + photoHeight - 30);
+                        ctx.shadowBlur = 0;
+                    }
                     
                     loadedImages++;
                     
                     // When all photos are loaded, show result and add watermark
                     if (loadedImages === shotCount) {
                         // Add watermark at the bottom
-                        ctx.fillStyle = "#666";
-                        ctx.font = "italic 22px 'Poppins'";
+                        ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+                        ctx.font = "italic 24px 'Poppins'";
                         ctx.textAlign = "center";
-                        ctx.fillText("created by syafizam ✨", stripCanvas.width / 2, stripCanvas.height - 40);
+                        ctx.fillText("created by syafizam", stripCanvas.width / 2, stripCanvas.height - 40);
                         
                         // Show result container
                         resultContainer.style.display = "flex";
@@ -618,4 +738,4 @@
         });
     </script>
 </body>
-            </html>
+                    </html>
