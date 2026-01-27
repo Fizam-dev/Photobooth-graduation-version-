@@ -79,11 +79,7 @@ body {
     margin-bottom: 10px;
     letter-spacing: 1px;
     overflow: hidden;
-    border-right: 2px solid var(--text-light);
-    white-space: nowrap;
-    width: 0;
-    margin: 0 auto;
-}
+    }
 
 
 
