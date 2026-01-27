@@ -274,7 +274,7 @@ function showPreview() {
         div.className = "photo-thumbnail";
         div.innerHTML = `
             <img src="${photo.toDataURL()}" alt="Photo ${index + 1}">
-            <div class="retake-overlay">🔄</div>
+            <div class="retake-overlay"><i class="fas fa-redo"></i></div>
         `;
         div.addEventListener("click", () => retakeSinglePhoto(index));
         photoGrid.appendChild(div);
@@ -413,7 +413,7 @@ function drawTemplateFooter(ctx) {
     ctx.fillStyle = textColor;
     ctx.font = '500 20px "Inter", sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText("Created by Syafizam⋆. 𐙚", previewCanvas.width / 2, footerY);
+    ctx.fillText("Created by Syafizam🎧", previewCanvas.width / 2, footerY);
 }
 
 // Draw Background
