@@ -3,280 +3,311 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✨ Cute Cyber Photobooth ✨</title>
+    <title>✨ Syafizam Photo Story | For Someone Special ✨</title>
     <style>
         :root {
-            --accent: #ff79c6; /* Pink Cute */
-            --bg: #282a36;    /* Dark Theme */
-            --panel: #44475a;
-            --text: #f8f8f2;
+            --primary-love: #ff4d6d;
+            --neon-purple: #7209b7;
+            --dark-bg: #0f0c29; /* Dark Cosmic Blue */
+            --text: #ffffff;
         }
 
         body {
             font-family: 'Segoe UI', cursive, sans-serif;
-            background-color: var(--bg);
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             color: var(--text);
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Header & Decorations */
+        /* Animated Stars Background */
+        .stars-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Header Styles */
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            padding: 30px 10px;
         }
 
         .header h1 {
-            color: var(--accent);
-            text-shadow: 0 0 10px rgba(255, 121, 198, 0.5);
-            margin: 10px 0;
+            font-size: 2.5rem;
+            margin: 0;
+            background: linear-gradient(to right, #ff4d6d, #ef476f, #ffd166);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 8px rgba(255, 77, 109, 0.5));
         }
 
         /* Camera Box */
-        .main-card {
-            background: var(--panel);
-            padding: 15px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            width: 100%;
+        .camera-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--primary-love);
+            border-radius: 25px;
+            padding: 20px;
+            width: 90%;
             max-width: 500px;
+            box-shadow: 0 0 30px rgba(255, 77, 109, 0.2);
             position: relative;
         }
 
         video {
             width: 100%;
-            border-radius: 12px;
-            background: #000;
-            transform: scaleX(-1);
+            border-radius: 15px;
+            transform: scaleX(-1); /* Mirror */
         }
 
-        #timer-overlay {
+        #timer-box {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 100px;
-            font-weight: bold;
-            color: var(--accent);
-            pointer-events: none;
+            font-size: 120px;
+            font-weight: 900;
+            color: var(--primary-love);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
             display: none;
+            z-index: 10;
         }
 
-        /* Controls */
-        .setup-zone {
-            margin-top: 15px;
+        /* Responsive Controls */
+        .ui-controls {
+            margin-top: 20px;
             display: flex;
             flex-direction: column;
             gap: 15px;
+            width: 100%;
         }
 
-        .btn-group {
+        .shot-selector {
             display: flex;
             justify-content: center;
             gap: 10px;
         }
 
-        .choice-btn {
-            background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--text);
-            padding: 8px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .choice-btn.active {
-            background: var(--accent);
+        .btn-shot {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--primary-love);
             color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
-        #snap-btn {
-            background: var(--accent);
+        .btn-shot.active {
+            background: var(--primary-love);
+            box-shadow: 0 0 15px var(--primary-love);
+        }
+
+        #action-btn {
+            background: linear-gradient(45deg, #ff4d6d, #7209b7);
             color: white;
             border: none;
-            padding: 15px;
-            border-radius: 12px;
+            padding: 18px;
+            border-radius: 50px;
             font-weight: bold;
+            font-size: 1.2rem;
             cursor: pointer;
-            font-size: 1.1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        #snap-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        #action-btn:active { transform: scale(0.95); }
 
         /* Preview Area */
-        .result-zone {
-            margin-top: 30px;
-            display: none; /* Hidden until photo taken */
+        .preview-section {
+            display: none;
             flex-direction: column;
             align-items: center;
+            margin: 40px 0;
             width: 100%;
         }
 
-        .strip-preview {
-            background: white;
+        .canvas-wrapper {
+            background: #fff;
             padding: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
-            max-width: 300px;
+            border-radius: 5px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            max-width: 320px;
         }
 
-        canvas {
-            width: 100%;
-            height: auto;
-            border: 1px solid #ddd;
-        }
+        canvas { width: 100%; height: auto; }
 
-        .download-btn {
-            background: #50fa7b; /* Green */
-            color: #282a36;
+        .dl-button {
+            background: #00f5d4;
+            color: #000;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 900;
             border: none;
-            padding: 12px 30px;
-            border-radius: 10px;
-            font-weight: bold;
+            margin-top: 20px;
             cursor: pointer;
+            text-transform: uppercase;
         }
-
-        .cute-decor { font-size: 24px; }
     </style>
 </head>
 <body>
 
+    <div class="stars-container" id="stars"></div>
+
     <div class="header">
-        <div class="cute-decor">✨ 🧸 🎀 🧸 ✨</div>
-        <h1>SYAFIZAM PHOTO STORY</h1>
-        <p>Tangkap memori unik anda di sini!</p>
+        <h1>✨ MY PHOTO STORY ✨</h1>
+        <p>Tangkap Momen Indah Bersama Syafizam 💖</p>
     </div>
 
-    <div class="main-card">
-        <video id="video" autoplay playsinline></video>
-        <div id="timer-overlay">3</div>
+    <div class="camera-card">
+        <video id="webcam" autoplay playsinline></video>
+        <div id="timer-box">3</div>
 
-        <div class="setup-zone">
-            <div style="text-align:center">Pilih bilangan gambar:</div>
-            <div class="btn-group">
-                <button class="choice-btn" onclick="setShots(2)">2 Gambar</button>
-                <button class="choice-btn active" onclick="setShots(3)">3 Gambar</button>
-                <button class="choice-btn" onclick="setShots(4)">4 Gambar</button>
+        <div class="ui-controls">
+            <div style="text-align:center; font-size: 0.9rem;">Pilih Frame Story:</div>
+            <div class="shot-selector">
+                <button class="btn-shot" onclick="setShots(2)">2 Shots</button>
+                <button class="btn-shot active" onclick="setShots(3)">3 Shots</button>
+                <button class="btn-shot" onclick="setShots(4)">4 Shots</button>
             </div>
-            <button id="snap-btn">MULAI SESI FOTO 📸</button>
+            <button id="action-btn">MULA SESI FOTO 📸</button>
         </div>
     </div>
 
-    <div class="result-zone" id="resultZone">
-        <h3>✨ Preview Hasil ✨</h3>
-        <div class="strip-preview">
-            <canvas id="mainCanvas"></canvas>
+    <div class="preview-section" id="previewSection">
+        <h2 style="color: #ffd166;">💝 Cantiknya! Preview Dulu:</h2>
+        <div class="canvas-wrapper">
+            <canvas id="outputCanvas"></canvas>
         </div>
-        <button class="download-btn" id="downloadBtn">SIMPAN GAMBAR 📥</button>
-        <p style="font-size: 0.8rem; margin-top:10px;">*Klik simpan untuk kualiti HD</p>
+        <button class="dl-button" id="dlBtn">MUAT TURUN & SHARE! 📥</button>
     </div>
 
     <script>
-        const video = document.getElementById('video');
-        const timerEl = document.getElementById('timer-overlay');
-        const snapBtn = document.getElementById('snap-btn');
-        const resultZone = document.getElementById('resultZone');
-        const mainCanvas = document.getElementById('mainCanvas');
-        const downloadBtn = document.getElementById('downloadBtn');
+        const video = document.getElementById('webcam');
+        const timerBox = document.getElementById('timer-box');
+        const actionBtn = document.getElementById('action-btn');
+        const previewSection = document.getElementById('previewSection');
+        const outputCanvas = document.getElementById('outputCanvas');
+        const dlBtn = document.getElementById('dlBtn');
 
-        let totalShots = 3;
-        let capturedFrames = [];
+        let shotCount = 3;
+        let photos = [];
 
-        // 1. Setup Camera
-        navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } })
-            .then(stream => { video.srcObject = stream; })
-            .catch(err => alert("Kamera tidak diakses!"));
+        // Setup Webcam
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+            .then(s => video.srcObject = s);
 
-        // 2. Pilih jumlah gambar
-        function setShots(num) {
-            totalShots = num;
-            document.querySelectorAll('.choice-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.innerText.includes(num));
+        function setShots(n) {
+            shotCount = n;
+            document.querySelectorAll('.btn-shot').forEach(b => {
+                b.classList.toggle('active', b.innerText.includes(n));
             });
         }
 
-        // 3. Ambil Gambar
-        snapBtn.onclick = async () => {
-            capturedFrames = [];
-            snapBtn.disabled = true;
-            resultZone.style.display = 'none';
+        // Star Background Effect
+        for (let i = 0; i < 50; i++) {
+            let star = document.createElement('div');
+            star.style.position = 'absolute';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.width = '2px';
+            star.style.height = '2px';
+            star.style.background = '#fff';
+            star.style.borderRadius = '50%';
+            star.style.opacity = Math.random();
+            document.getElementById('stars').appendChild(star);
+        }
 
-            for (let i = 0; i < totalShots; i++) {
-                // Countdown
-                timerEl.style.display = 'block';
+        actionBtn.onclick = async () => {
+            photos = [];
+            actionBtn.disabled = true;
+            previewSection.style.display = 'none';
+
+            for (let i = 0; i < shotCount; i++) {
+                timerBox.style.display = 'block';
                 for (let c = 3; c > 0; c--) {
-                    timerEl.innerText = c;
+                    timerBox.innerText = c;
                     await new Promise(r => setTimeout(r, 1000));
                 }
-                timerEl.style.display = 'none';
+                timerBox.style.display = 'none';
 
                 // Capture
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = video.videoWidth;
-                tempCanvas.height = video.videoHeight;
-                const ctx = tempCanvas.getContext('2d');
-                ctx.translate(tempCanvas.width, 0);
-                ctx.scale(-1, 1);
-                ctx.drawImage(video, 0, 0);
-                capturedFrames.push(tempCanvas.toDataURL('image/jpeg', 0.9));
+                const temp = document.createElement('canvas');
+                temp.width = video.videoWidth;
+                temp.height = video.videoHeight;
+                const tCtx = temp.getContext('2d');
+                tCtx.translate(temp.width, 0);
+                tCtx.scale(-1, 1);
+                tCtx.drawImage(video, 0, 0);
+                photos.push(temp.toDataURL('image/jpeg', 1.0));
                 
-                // Gap
-                await new Promise(r => setTimeout(r, 500));
+                await new Promise(r => setTimeout(r, 600));
             }
-
-            renderStrip();
-            snapBtn.disabled = false;
+            renderFinalStrip();
+            actionBtn.disabled = false;
         };
 
-        // 4. Generate Strip (Preview Mode)
-        function renderStrip() {
-            const ctx = mainCanvas.getContext('2d');
-            const w = 600; 
-            const h = 450;
-            const pad = 30;
-            const headerSpace = 100;
-
-            mainCanvas.width = w + (pad * 2);
-            mainCanvas.height = (h * totalShots) + (pad * (totalShots + 1)) + headerSpace;
-
-            // Background Putih Bersih
-            ctx.fillStyle = "white";
-            ctx.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
-
-            // Header Teks Menarik di Atas
-            ctx.fillStyle = "#ff79c6";
-            ctx.font = "bold 35px 'Comic Sans MS', cursive";
-            ctx.textAlign = "center";
-            ctx.fillText("✨ PHOTO STORY ✨", mainCanvas.width / 2, 60);
+        function renderFinalStrip() {
+            const ctx = outputCanvas.getContext('2d');
+            const w = 600, h = 450, pad = 30, header = 120;
             
-            ctx.fillStyle = "#444";
-            ctx.font = "16px Arial";
-            ctx.fillText("Captured by Syafizam Photobooth", mainCanvas.width / 2, 85);
+            outputCanvas.width = w + (pad * 2);
+            outputCanvas.height = (h * shotCount) + (pad * (shotCount + 1)) + header;
 
-            // Lukis Gambar
+            // Background
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, outputCanvas.width, outputCanvas.height);
+
+            // Header Aesthetic
+            ctx.fillStyle = "#ff4d6d";
+            ctx.font = "bold 40px 'Arial'";
+            ctx.textAlign = "center";
+            ctx.fillText("✨ PHOTO STORY ✨", outputCanvas.width/2, 60);
+            ctx.fillStyle = "#777";
+            ctx.font = "18px Arial";
+            ctx.fillText("Special Moments with Syafizam", outputCanvas.width/2, 90);
+
             let loaded = 0;
-            capturedFrames.forEach((src, i) => {
+            photos.forEach((src, i) => {
                 const img = new Image();
                 img.onload = () => {
-                    ctx.drawImage(img, pad, headerSpace + pad + (i * (h + pad)), w, h);
+                    const y = header + pad + (i * (h + pad));
+                    ctx.drawImage(img, pad, y, w, h);
+                    
+                    // TAMBAH STICKER PADA BUCU (CREATIVE TOUCH)
+                    drawHeartSticker(ctx, pad + 10, y + 10); // Bucu atas kiri
+                    drawStarSticker(ctx, pad + w - 40, y + h - 40); // Bucu bawah kanan
+
                     loaded++;
-                    if (loaded === totalShots) {
-                        resultZone.style.display = 'flex';
-                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                    if (loaded === shotCount) {
+                        previewSection.style.display = 'flex';
+                        window.scrollTo({top: document.body.scrollHeight, behavior:'smooth'});
                     }
                 };
                 img.src = src;
             });
         }
 
-        // 5. Download
-        downloadBtn.onclick = () => {
+        function drawHeartSticker(ctx, x, y) {
+            ctx.fillStyle = "#ff4d6d";
+            ctx.font = "30px Arial";
+            ctx.fillText("❤️", x + 15, y + 25);
+        }
+
+        function drawStarSticker(ctx, x, y) {
+            ctx.fillStyle = "#ffd166";
+            ctx.font = "30px Arial";
+            ctx.fillText("⭐", x + 15, y + 25);
+        }
+
+        dlBtn.onclick = () => {
             const link = document.createElement('a');
-            link.download = `PhotoStory_${Date.now()}.png`;
-            link.href = mainCanvas.toDataURL('image/png');
+            link.download = `Syafizam_LoveStory_${Date.now()}.png`;
+            link.href = outputCanvas.toDataURL();
             link.click();
         };
     </script>
