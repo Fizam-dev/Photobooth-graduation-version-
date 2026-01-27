@@ -5,8 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⋆. 𐙚 ̊ Cania Photobooth ⋆. 𐙚 ̊</title>
+    <title>E-Photobooth</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
@@ -14,7 +15,7 @@
         <!-- Left Side: Camera -->
         <div class="left-side">
             <div class="title">
-                <h1>⋆. 𐙚 ̊ Cania Photobooth ⋆. 𐙚 ̊</h1>
+                <h1>E-Photobooth</h1>
             </div>
 
             <div class="video-container">
@@ -28,7 +29,7 @@
             <div class="controls-section">
                 <!-- Frame Selection -->
                 <div class="control-group">
-                    <label>📸 Jumlah Foto</label>
+                    <label><i class="fas fa-camera"></i> Jumlah Foto</label>
                     <div class="frame-options">
                         <button class="frame-btn" data-frames="3">3 Foto</button>
                         <button class="frame-btn active" data-frames="4">4 Foto</button>
@@ -38,7 +39,7 @@
 
                 <!-- Filter Selection -->
                 <div class="control-group">
-                    <label>🎨 Filter</label>
+                    <label><i class="fas fa-sliders-h"></i> Filter</label>
                     <div class="filter-options">
                         <button class="filter-btn active" data-filter="none">Normal</button>
                         <button class="filter-btn" data-filter="grayscale">B&W</button>
@@ -50,16 +51,16 @@
 
                 <!-- Timer -->
                 <div class="control-group timer-group">
-                    <label>⏰ Timer</label>
+                    <label><i class="fas fa-clock"></i> Timer</label>
                     <div class="timer-input-group">
                         <input type="number" min="0" max="10" placeholder="3" id="timer" value="3">
-                        <span>detik</span>
+                        <span>Second</span>
                     </div>
                 </div>
 
                 <!-- Capture Button -->
                 <button id="capture-btn" class="capture-button">
-                    <span class="btn-icon">📸</span>
+                    <span class="btn-icon"><i class="fas fa-camera"></i></span>
                     <span class="btn-text">Ambil Foto</span>
                 </button>
             </div>
@@ -76,7 +77,7 @@
                 <div class="customization-section">
                     <!-- Frame Template Selection -->
                     <div class="custom-group">
-                        <label>🖼️ Pilih Template</label>
+                        <label><i class="fas fa-sliders-h"></i> Pilih Template</label>
                         <div class="frame-templates-grid">
                             <button class="template-btn active" data-template="classic">
                                 <div class="template-preview classic-preview"></div>
@@ -123,7 +124,7 @@
 
                     <!-- Background Color Selection -->
                     <div class="custom-group">
-                        <label>🎨 Warna Background Strip</label>
+                        <label><i class="fas fa-palette"></i> Warna Background Strip</label>
                         <div class="bg-color-options">
                             <button class="bg-color-btn active" data-bg="black" style="background: #000000;" title="Black"></button>
                             <button class="bg-color-btn" data-bg="white" style="background: #FFFFFF; border-color: #666;" title="White"></button>
@@ -138,12 +139,12 @@
 
                     <!-- Decoration & Character Selection -->
                     <div class="custom-group">
-                        <label>✨ Hiasan & Karakter Dekoratif</label>
+                        <label><i class="fas fa-paint-brush"></i> Hiasan & Karakter Dekoratif</label>
                         <div class="decoration-options">
                             <button class="deco-btn active" data-deco="none">Tanpa Hiasan</button>
-                            <button class="deco-btn" data-deco="butterflies">🦋 Kupu-kupu</button>
-                            <button class="deco-btn" data-deco="sparkles">✨ Sparkles</button>
-                            <button class="deco-btn" data-deco="stickers">🌈 Stickers</button>
+                            <button class="deco-btn" data-deco="butterflies"><i class="fas fa-butterfly"></i> Kupu-kupu</button>
+                            <button class="deco-btn" data-deco="sparkles"><i class="fas fa-star"></i> Sparkles</button>
+                            <button class="deco-btn" data-deco="stickers"><i class="fas fa-sticky-note"></i> Stickers</button>
                             <button class="deco-btn" data-deco="music">⋆.˚ ✮ 🎧</button>
                             <button class="deco-btn" data-deco="cute">𐙚 ⋆.˚</button>
                             <button class="deco-btn" data-deco="spider">🕷️ 🕸 ✮</button>
@@ -157,10 +158,10 @@
                 <div class="preview-thumbnails" id="photo-grid"></div>
                 <div class="preview-actions">
                     <button class="btn-retake" id="btn-retake">
-                        <span>🔄 Retake Semua</span>
+                        <span><i class="fas fa-redo"></i> Retake Semua</span>
                     </button>
                     <button class="btn-save" id="btn-save">
-                        <span>💾 Save Foto</span>
+                        <span>💾<i class="fas fa-save"></i> Save Foto</span>
                     </button>
                 </div>
             </div>
