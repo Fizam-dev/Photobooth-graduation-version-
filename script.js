@@ -571,7 +571,7 @@ btnSave.addEventListener("click", () => {
     // Download to device
     let a = document.createElement("a");
     a.href = dataURL;
-    a.download = `CaniaPhotobooth-${Date.now()}.png`;
+    a.download = `E-Photobooth-${Date.now()}.png`;
     a.click();
     
     // Show success message
