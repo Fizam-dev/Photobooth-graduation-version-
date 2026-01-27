@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <title>Syafizam Photobooth</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>📸 My Photobooth</h1>
+        <div class="camera-box">
+            <video id="video" autoplay></video>
+            <canvas id="canvas" style="display:none;"></canvas>
+        </div>
+        
+        <div class="controls">
+            <button id="snap">Ambil Foto</button>
+        </div>
+
+        <div id="gallery">
+            <h3>Hasil Tangkapan:</h3>
+            <div id="photos"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
