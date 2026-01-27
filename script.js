@@ -1,37 +1,594 @@
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-const snap = document.getElementById('snap');
-const photos = document.getElementById('photos');
+// Global Variables
+var video = document.getElementById("video");
+var captureBtn = document.getElementById("capture-btn");
+var timerInput = document.getElementById("timer");
+var countdownDisplay = document.getElementById("countdown-display");
+var flash = document.getElementById("flash");
+var overlayCanvas = document.getElementById("overlay-canvas");
+var previewCanvas = document.getElementById("preview-canvas");
+var photoGrid = document.getElementById("photo-grid");
+var btnRetake = document.getElementById("btn-retake");
+var btnSave = document.getElementById("btn-save");
+var rightSide = document.getElementById("right-side");
+var container = document.querySelector(".container");
 
-// 1. Akses kamera pengguna
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-        video.srcObject = stream;
-        video.play();
+// Settings
+var selectedFrames = 4;
+var selectedFilter = "none";
+var selectedTemplate = "classic";
+var selectedDecoration = "none";
+var selectedBackground = "black";
+var capturedPhotos = [];
+var currentPhotoIndex = null;
+
+// Background color mapping
+const backgroundColors = {
+    'black': '#000000',
+    'white': '#FFFFFF',
+    'navy': '#1a1a2e',
+    'maroon': '#800020',
+    'burgundy': '#6B1515',
+    'charcoal': '#36454F',
+    'forest': '#2C5F2D',
+    'midnight': '#191970'
+};
+
+// Initialize Camera
+navigator.mediaDevices.getUserMedia({ 
+    video: { 
+        width: { ideal: 1280 },
+        height: { ideal: 720 }
+    } 
+}).then((stream) => {
+    video.srcObject = stream;
+    video.onloadedmetadata = () => {
+        overlayCanvas.width = video.videoWidth;
+        overlayCanvas.height = video.videoHeight;
+    };
+}).catch((err) => {
+    console.error("Camera error:", err);
+    alert("Tidak bisa mengakses kamera. Pastikan kamera diizinkan!");
+});
+
+// Frame Selection
+document.querySelectorAll('.frame-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.frame-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedFrames = parseInt(btn.getAttribute('data-frames'));
+    });
+});
+
+// Filter Selection
+document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedFilter = btn.getAttribute('data-filter');
+        applyFilterToVideo();
+    });
+});
+
+// Apply Filter to Video Preview
+function applyFilterToVideo() {
+    const filterClasses = ['filter-none', 'filter-grayscale', 'filter-sepia', 'filter-vintage', 'filter-warm'];
+    video.classList.remove(...filterClasses);
+    video.classList.add(`filter-${selectedFilter}`);
+}
+
+// Shutter Sound
+function playShutter() {
+    try {
+        var audio = new Audio("camera.mp3");
+        audio.play().catch(() => {
+            // Jika file audio tidak ada, skip saja
+        });
+    } catch (e) {
+        // Skip jika error
+    }
+}
+
+// Capture Button Click
+captureBtn.addEventListener("click", () => {
+    let delay = parseInt(timerInput.value) || 3;
+    startSequence(delay);
+});
+
+// Start Photo Sequence
+function startSequence(delay) {
+    captureBtn.disabled = true;
+    capturedPhotos = [];
+    let count = 0;
+
+    function doShoot() {
+        showCountdown(delay);
+
+        setTimeout(() => {
+            takePhoto();
+            count++;
+
+            if (count < selectedFrames) {
+                doShoot();
+            } else {
+                setTimeout(() => {
+                    showPreview();
+                    captureBtn.disabled = false;
+                    countdownDisplay.textContent = "";
+                }, 300);
+            }
+        }, delay * 1000);
+    }
+
+    doShoot();
+}
+
+// Countdown Timer
+function showCountdown(sec) {
+    let timer = sec;
+    countdownDisplay.style.display = "block";
+    
+    let countdown = setInterval(() => {
+        countdownDisplay.textContent = timer <= 0 ? "📸" : timer;
+        if (timer-- <= 0) {
+            clearInterval(countdown);
+            setTimeout(() => {
+                countdownDisplay.textContent = "";
+            }, 200);
+        }
+    }, 1000);
+}
+
+// Take Photo
+function takePhoto() {
+    flashEffect();
+    playShutter();
+
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // Mirror the video
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, -canvas.width, 0);
+
+    // Apply filter
+    if (selectedFilter !== "none") {
+        applyCanvasFilter(ctx, canvas);
+    }
+
+    capturedPhotos.push(canvas);
+}
+
+// Apply Filter to Canvas
+function applyCanvasFilter(ctx, canvas) {
+    let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let data = imageData.data;
+
+    switch (selectedFilter) {
+        case "grayscale":
+            for (let i = 0; i < data.length; i += 4) {
+                let avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                data[i] = data[i + 1] = data[i + 2] = avg;
+            }
+            break;
+        case "sepia":
+            for (let i = 0; i < data.length; i += 4) {
+                let r = data[i];
+                let g = data[i + 1];
+                let b = data[i + 2];
+                data[i] = Math.min(255, r * 0.393 + g * 0.769 + b * 0.189);
+                data[i + 1] = Math.min(255, r * 0.349 + g * 0.686 + b * 0.168);
+                data[i + 2] = Math.min(255, r * 0.272 + g * 0.534 + b * 0.131);
+            }
+            break;
+        case "vintage":
+            for (let i = 0; i < data.length; i += 4) {
+                let r = data[i];
+                let g = data[i + 1];
+                let b = data[i + 2];
+                data[i] = Math.min(255, (r * 0.393 + g * 0.769 + b * 0.189) * 0.9);
+                data[i + 1] = Math.min(255, (r * 0.349 + g * 0.686 + b * 0.168) * 0.9);
+                data[i + 2] = Math.min(255, (r * 0.272 + g * 0.534 + b * 0.131) * 0.9);
+            }
+            break;
+        case "warm":
+            for (let i = 0; i < data.length; i += 4) {
+                data[i] = Math.min(255, data[i] * 1.2);
+                data[i + 1] = Math.min(255, data[i + 1] * 1.05);
+            }
+            break;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+}
+
+// Flash Effect
+function flashEffect() {
+    flash.classList.add("active");
+    setTimeout(() => {
+        flash.classList.remove("active");
+    }, 150);
+}
+
+// Show Preview on Right Side
+function showPreview() {
+    createStoryGrid(capturedPhotos);
+    
+    // Show right side
+    rightSide.classList.add("active");
+    container.classList.add("has-preview");
+    
+    // Template Selection - Reset event listeners
+    document.querySelectorAll('.template-btn').forEach(btn => {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+    });
+    
+    document.querySelectorAll('.template-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            console.log('Template clicked:', this.getAttribute('data-template'));
+            document.querySelectorAll('.template-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            selectedTemplate = this.getAttribute('data-template');
+            createStoryGrid(capturedPhotos);
+        });
+    });
+
+    // Background Color Selection - Reset event listeners
+    document.querySelectorAll('.bg-color-btn').forEach(btn => {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+    });
+    
+    document.querySelectorAll('.bg-color-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            console.log('Background clicked:', this.getAttribute('data-bg'));
+            document.querySelectorAll('.bg-color-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            selectedBackground = this.getAttribute('data-bg');
+            createStoryGrid(capturedPhotos);
+        });
+    });
+
+    // Decoration Selection (includes characters now) - Reset event listeners
+    document.querySelectorAll('.deco-btn').forEach(btn => {
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+    });
+    
+    document.querySelectorAll('.deco-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            console.log('Decoration clicked:', this.getAttribute('data-deco'));
+            document.querySelectorAll('.deco-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            selectedDecoration = this.getAttribute('data-deco');
+            createStoryGrid(capturedPhotos);
+        });
+    });
+    
+    // Create thumbnails
+    photoGrid.innerHTML = "";
+    capturedPhotos.forEach((photo, index) => {
+        let div = document.createElement("div");
+        div.className = "photo-thumbnail";
+        div.innerHTML = `
+            <img src="${photo.toDataURL()}" alt="Photo ${index + 1}">
+            <div class="retake-overlay">🔄</div>
+        `;
+        div.addEventListener("click", () => retakeSinglePhoto(index));
+        photoGrid.appendChild(div);
     });
 }
 
-// 2. Fungsi ambil gambar
-snap.addEventListener('click', () => {
-    const context = canvas.getContext('2d');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+// Create Photo Strip with proper layout
+function createStoryGrid(photos) {
+    const ctx = previewCanvas.getContext("2d");
+    const photoCount = photos.length;
     
-    // Lukis gambar dari video ke canvas
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+    // Determine layout based on photo count
+    let layout = {};
     
-    // Tukar ke format imej (Base64)
-    const dataURL = canvas.toDataURL('image/png');
+    if (photoCount === 3 || photoCount === 4) {
+        // Vertical layout (1 column)
+        layout = {
+            columns: 1,
+            rows: photoCount,
+            photoWidth: 540,
+            photoHeight: 320,
+            sidePadding: 50,
+            topPadding: 50,
+            horizontalSpacing: 0,
+            verticalSpacing: 30,
+            footerHeight: 120,  // Increased footer height
+            bottomPadding: 40   // Extra space at bottom
+        };
+    } else if (photoCount === 6) {
+        // Grid layout (2 columns x 3 rows)
+        layout = {
+            columns: 2,
+            rows: 3,
+            photoWidth: 260,
+            photoHeight: 180,
+            sidePadding: 50,
+            topPadding: 50,
+            horizontalSpacing: 20,
+            verticalSpacing: 20,
+            footerHeight: 120,  // Increased footer height
+            bottomPadding: 40   // Extra space at bottom
+        };
+    }
     
-    // Paparkan di galeri
-    const img = document.createElement('img');
-    img.src = dataURL;
-    img.className = "captured-img";
-    photos.prepend(img);
+    // Calculate canvas dimensions with proper spacing
+    const canvasWidth = (layout.photoWidth * layout.columns) + (layout.horizontalSpacing * (layout.columns - 1)) + (layout.sidePadding * 2);
+    const canvasHeight = (layout.photoHeight * layout.rows) + (layout.verticalSpacing * (layout.rows - 1)) + layout.topPadding + layout.footerHeight + layout.bottomPadding;
+    
+    previewCanvas.width = canvasWidth;
+    previewCanvas.height = canvasHeight;
+    
+    // Draw background
+    drawBackground(ctx);
+    
+    // Draw photos in grid
+    let photoIndex = 0;
+    for (let row = 0; row < layout.rows; row++) {
+        for (let col = 0; col < layout.columns; col++) {
+            if (photoIndex >= photos.length) break;
+            
+            const photo = photos[photoIndex];
+            const x = layout.sidePadding + (col * (layout.photoWidth + layout.horizontalSpacing));
+            const y = layout.topPadding + (row * (layout.photoHeight + layout.verticalSpacing));
+            
+            // Calculate crop to maintain proper aspect ratio
+            const sourceRatio = photo.width / photo.height;
+            const targetRatio = layout.photoWidth / layout.photoHeight;
+            
+            let sourceX = 0, sourceY = 0, sourceWidth = photo.width, sourceHeight = photo.height;
+            
+            if (sourceRatio > targetRatio) {
+                sourceWidth = photo.height * targetRatio;
+                sourceX = (photo.width - sourceWidth) / 2;
+            } else {
+                sourceHeight = photo.width / targetRatio;
+                sourceY = (photo.height - sourceHeight) / 2;
+            }
+            
+            // Add frame/border effect based on template
+            if (selectedTemplate === 'polaroid' || selectedTemplate === 'doodle' || selectedTemplate === 'minimal') {
+                ctx.fillStyle = '#FFFFFF';
+                const borderWidth = 10;
+                ctx.fillRect(x - borderWidth, y - borderWidth, layout.photoWidth + borderWidth * 2, layout.photoHeight + borderWidth * 2);
+            }
+            
+            if (selectedTemplate === 'doodle') {
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([12, 8]);
+                const borderWidth = 10;
+                ctx.strokeRect(x - borderWidth, y - borderWidth, layout.photoWidth + borderWidth * 2, layout.photoHeight + borderWidth * 2);
+                ctx.setLineDash([]);
+            }
+            
+            // Save context state
+            ctx.save();
+            
+            // Create rounded rectangle path for photo
+            const borderRadius = 12; // Border radius for photos
+            ctx.beginPath();
+            ctx.moveTo(x + borderRadius, y);
+            ctx.lineTo(x + layout.photoWidth - borderRadius, y);
+            ctx.quadraticCurveTo(x + layout.photoWidth, y, x + layout.photoWidth, y + borderRadius);
+            ctx.lineTo(x + layout.photoWidth, y + layout.photoHeight - borderRadius);
+            ctx.quadraticCurveTo(x + layout.photoWidth, y + layout.photoHeight, x + layout.photoWidth - borderRadius, y + layout.photoHeight);
+            ctx.lineTo(x + borderRadius, y + layout.photoHeight);
+            ctx.quadraticCurveTo(x, y + layout.photoHeight, x, y + layout.photoHeight - borderRadius);
+            ctx.lineTo(x, y + borderRadius);
+            ctx.quadraticCurveTo(x, y, x + borderRadius, y);
+            ctx.closePath();
+            ctx.clip();
+            
+            // Draw the photo with rounded corners
+            ctx.drawImage(photo, sourceX, sourceY, sourceWidth, sourceHeight, x, y, layout.photoWidth, layout.photoHeight);
+            
+            // Restore context
+            ctx.restore();
+            
+            photoIndex++;
+        }
+    }
+    
+    // Draw footer
+    drawTemplateFooter(ctx);
+}
 
-    // Automatik muat turun (Sebab tiada database)
-    const link = document.createElement('a');
-    link.href = dataURL;
-    link.download = `photo-${Date.now()}.png`;
-    link.click();
+// Draw Template Footer
+function drawTemplateFooter(ctx) {
+    const bgColor = backgroundColors[selectedBackground] || '#000000';
+    const isLight = selectedBackground === 'white';
+    const textColor = isLight ? '#333333' : '#FFFFFF';
+    
+    // Position footer closer to bottom with proper spacing from photos
+    const footerY = previewCanvas.height - 30; // 30px from bottom
+    
+    ctx.fillStyle = textColor;
+    ctx.font = '500 20px "Inter", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText("Created by Syafizam⋆. 𐙚", previewCanvas.width / 2, footerY);
+}
+
+// Draw Background
+function drawBackground(ctx) {
+    const bgColor = backgroundColors[selectedBackground] || '#000000';
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
+    
+    // Add decorations (includes character decorations now)
+    addDecorations(ctx, capturedPhotos.length);
+}
+
+// Add Decorations based on selection
+function addDecorations(ctx, photoCount) {
+    const canvasHeight = previewCanvas.height - 120; // Stop before footer area
+    const isLight = selectedBackground === 'white';
+    
+    // Use white color for all decorations
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+    
+    switch (selectedDecoration) {
+        case "butterflies":
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = "30px Arial";
+            const butterflyPositions = [
+                {x: 25, y: 45},
+                {x: previewCanvas.width - 55, y: 65},
+                {x: 20, y: canvasHeight - 35},
+                {x: previewCanvas.width - 50, y: canvasHeight - 55}
+            ];
+            
+            butterflyPositions.forEach(pos => {
+                ctx.fillText("🦋", pos.x, pos.y);
+            });
+            break;
+            
+        case "sparkles":
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = "24px Arial";
+            const sparkles = ["✨", "⭐", "💫", "🌟"];
+            for (let i = 0; i < 10; i++) {
+                let x = 15 + Math.random() * (previewCanvas.width - 30);
+                let y = 50 + Math.random() * (canvasHeight - 100);
+                let sparkle = sparkles[Math.floor(Math.random() * sparkles.length)];
+                ctx.fillText(sparkle, x, y);
+            }
+            break;
+            
+        case "stickers":
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = "26px Arial";
+            const stickers = ["🌈", "💝", "🎀", "🦄", "🍭", "🎨", "💕", "🌸"];
+            for (let i = 0; i < 8; i++) {
+                let x = 15 + Math.random() * (previewCanvas.width - 30);
+                let y = 50 + Math.random() * (canvasHeight - 100);
+                let sticker = stickers[Math.floor(Math.random() * stickers.length)];
+                ctx.fillText(sticker, x, y);
+            }
+            break;
+            
+        case "music":
+            // Music theme: ⋆.˚, ✮, 🎧 scattered - INCREASED COUNT
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            const musicSymbols = ["⋆.˚", "✮", "🎧"];
+            const musicCount = 30; // Increased from 15 to 30
+            
+            for (let i = 0; i < musicCount; i++) {
+                const symbol = musicSymbols[i % musicSymbols.length];
+                const fontSize = symbol === "🎧" ? 28 : 32;
+                ctx.font = `${fontSize}px Arial`;
+                
+                let x = 20 + Math.random() * (previewCanvas.width - 40);
+                let y = 40 + Math.random() * (canvasHeight - 80);
+                
+                ctx.fillText(symbol, x, y);
+            }
+            break;
+            
+        case "cute":
+            // Cute theme: 𐙚, ⋆.˚ scattered - INCREASED COUNT
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            const cuteSymbols = ["𐙚", "⋆.˚"];
+            const cuteCount = 25; // Increased from 12 to 25
+            
+            for (let i = 0; i < cuteCount; i++) {
+                const symbol = cuteSymbols[i % cuteSymbols.length];
+                ctx.font = "36px Arial";
+                
+                let x = 20 + Math.random() * (previewCanvas.width - 40);
+                let y = 40 + Math.random() * (canvasHeight - 80);
+                
+                ctx.fillText(symbol, x, y);
+            }
+            break;
+            
+        case "spider":
+            // Spider theme: 🕷️, 🕸, ✮ scattered - INCREASED COUNT
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+            const spiderSymbols = ["🕷️", "🕸", "✮"];
+            const spiderCount = 30; // Increased from 15 to 30
+            
+            for (let i = 0; i < spiderCount; i++) {
+                const symbol = spiderSymbols[i % spiderSymbols.length];
+                const fontSize = symbol === "✮" ? 32 : 28;
+                ctx.font = `${fontSize}px Arial`;
+                
+                let x = 20 + Math.random() * (previewCanvas.width - 40);
+                let y = 40 + Math.random() * (canvasHeight - 80);
+                
+                ctx.fillText(symbol, x, y);
+            }
+            break;
+            
+        case "none":
+        default:
+            break;
+    }
+}
+
+// Retake Single Photo
+function retakeSinglePhoto(index) {
+    if (confirm(`Retake foto ke-${index + 1}?`)) {
+        currentPhotoIndex = index;
+        
+        let delay = parseInt(timerInput.value) || 3;
+        showCountdown(delay);
+        
+        setTimeout(() => {
+            takePhoto();
+            capturedPhotos[index] = capturedPhotos[capturedPhotos.length - 1];
+            capturedPhotos.pop();
+            
+            setTimeout(() => {
+                showPreview();
+            }, 300);
+        }, delay * 1000);
+    }
+}
+
+// Retake All Photos
+btnRetake.addEventListener("click", () => {
+    if (confirm("Retake semua foto?")) {
+        rightSide.classList.remove("active");
+        container.classList.remove("has-preview");
+        capturedPhotos = [];
+        let delay = parseInt(timerInput.value) || 3;
+        startSequence(delay);
+    }
+});
+
+// Save Photo
+btnSave.addEventListener("click", () => {
+    let dataURL = previewCanvas.toDataURL("image/png");
+    
+    // Download to device
+    let a = document.createElement("a");
+    a.href = dataURL;
+    a.download = `CaniaPhotobooth-${Date.now()}.png`;
+    a.click();
+    
+    // Show success message
+    alert("Foto berhasil disimpan! 🎉");
+    
+    // Reset for new photo
+    setTimeout(() => {
+        rightSide.classList.remove("active");
+        container.classList.remove("has-preview");
+        capturedPhotos = [];
+    }, 500);
+});
+
+// Prevent accidental page close
+window.addEventListener('beforeunload', (e) => {
+    if (capturedPhotos.length > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
 });
