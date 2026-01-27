@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Photoboth - Take Photos Anywhere You Want</title>
+    <title>E-Photoboth - Capture Your Best Moment With Us!</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -19,6 +19,7 @@
             --gray-dark: #1a1a1a;
             --gray-light: #333;
             --accent: #ffffff;
+            --pink-accent: #ff79c6;
         }
         
         body {
@@ -27,37 +28,24 @@
             color: var(--white);
             line-height: 1.6;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
         
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+        /* Header & Title */
+        .decor-top {
+            font-size: 28px;
+            margin-bottom: 10px;
+            color: var(--pink-accent);
+            letter-spacing: 5px;
         }
-        
-        /* Header */
-        header {
-            text-align: center;
-            padding: 30px 0;
-            border-bottom: 1px solid var(--gray-light);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .header-decoration {
-            position: absolute;
-            font-size: 24px;
-            color: rgba(255, 255, 255, 0.1);
-            z-index: -1;
-        }
-        
-        .decoration-1 { top: 10px; left: 10%; }
-        .decoration-2 { top: 30px; right: 15%; }
-        .decoration-3 { bottom: 20px; left: 20%; }
         
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
+            font-size: 3rem;
             font-weight: 700;
             letter-spacing: 2px;
             margin-bottom: 10px;
@@ -65,576 +53,360 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            text-align: center;
         }
         
         .tagline {
             font-size: 1.2rem;
             font-weight: 300;
             color: #aaa;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            text-align: center;
         }
         
-        /* Main Layout */
-        .main-content {
-            display: flex;
-            flex-wrap: wrap;
-            padding: 30px 0;
-            gap: 30px;
-        }
-        
-        .controls-section {
-            flex: 1;
-            min-width: 300px;
-            background-color: var(--gray-dark);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        
-        .preview-section {
-            flex: 2;
-            min-width: 300px;
-            background-color: var(--gray-dark);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        /* Main Card */
+        .main-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 30px;
+            width: 100%;
+            max-width: 800px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
             position: relative;
+            margin-bottom: 30px;
+        }
+        
+        /* Camera View */
+        .camera-container {
+            width: 100%;
+            border-radius: 15px;
             overflow: hidden;
+            background-color: #000;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        #videoElement {
+            width: 100%;
+            height: auto;
+            display: block;
+            transform: scaleX(-1); /* Mirror effect for selfie */
+        }
+        
+        #timer {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 100px;
+            font-weight: 800;
+            color: var(--pink-accent);
+            text-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
+            display: none;
+            z-index: 10;
         }
         
         /* Controls */
-        .control-group {
-            margin-bottom: 25px;
-        }
-        
-        .control-title {
+        .controls-panel {
             display: flex;
-            align-items: center;
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-            color: var(--white);
+            flex-direction: column;
+            gap: 20px;
         }
         
-        .control-title i {
-            margin-right: 10px;
-            color: var(--accent);
+        .control-group {
+            text-align: left;
+        }
+        
+        .control-label {
+            display: block;
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 8px;
+            margin-left: 5px;
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--pink-accent);
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .text-input::placeholder {
+            color: #888;
         }
         
         .photo-count-buttons {
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
+            justify-content: center;
         }
         
         .count-btn {
-            flex: 1;
-            min-width: 70px;
-            padding: 12px 5px;
-            background-color: var(--gray-light);
-            border: 2px solid transparent;
-            border-radius: 8px;
-            color: var(--white);
-            font-size: 1.1rem;
-            font-weight: 600;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 20px;
             cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
             transition: all 0.3s ease;
+            flex: 1;
+            max-width: 120px;
         }
         
         .count-btn:hover {
-            background-color: #444;
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .count-btn.active {
-            background-color: var(--black);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-        
-        .text-input {
-            width: 100%;
-            padding: 12px 15px;
-            background-color: var(--gray-light);
-            border: 1px solid #444;
-            border-radius: 8px;
-            color: var(--white);
-            font-size: 1rem;
-            margin-bottom: 10px;
-        }
-        
-        .text-input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        
-        .camera-btn {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--black);
-            color: var(--white);
-            border: 2px solid var(--accent);
-            border-radius: 8px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 15px;
-        }
-        
-        .camera-btn:hover {
-            background-color: var(--accent);
+            background: var(--pink-accent);
+            border-color: var(--pink-accent);
             color: var(--black);
         }
         
-        .camera-btn i {
+        /* Capture Button */
+        .capture-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(45deg, var(--pink-accent), #bd93f9);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .capture-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 121, 198, 0.3);
+        }
+        
+        .capture-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .capture-btn i {
             margin-right: 10px;
         }
         
-        /* Preview Section */
-        .photo-preview-container {
-            display: flex;
-            justify-content: center;
+        /* Result Preview */
+        .result-container {
+            display: none;
+            flex-direction: column;
             align-items: center;
-            min-height: 400px;
-            background-color: var(--black);
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 30px;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .result-title {
+            color: var(--pink-accent);
+            font-size: 2rem;
             margin-bottom: 20px;
-        }
-        
-        .photo-preview {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-        }
-        
-        .photo-item {
-            position: relative;
-            margin: 5px;
-            overflow: hidden;
-            background-color: #222;
-        }
-        
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-        
-        .photo-text {
-            position: absolute;
-            bottom: 15px;
-            left: 0;
-            right: 0;
             text-align: center;
-            color: var(--white);
-            font-weight: 600;
-            font-size: 1.2rem;
-            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
-            padding: 0 10px;
+            font-family: 'Playfair Display', serif;
         }
         
-        .watermark {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 0.9rem;
-            font-style: italic;
-        }
-        
-        .background-decorations {
-            position: absolute;
-            top: 0;
-            left: 0;
+        .strip-frame {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+            margin-bottom: 25px;
             width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.1;
+            display: flex;
+            justify-content: center;
         }
         
-        .decoration-item {
-            position: absolute;
-            font-size: 30px;
-            color: var(--white);
+        #stripCanvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
         }
         
         .download-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background-color: var(--gray-light);
-            color: var(--white);
+            background: #50fa7b;
+            color: #000;
+            padding: 18px 50px;
+            border-radius: 50px;
             border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-weight: 800;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-top: 10px;
         }
         
         .download-btn:hover {
-            background-color: #444;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(80, 250, 123, 0.3);
         }
         
         .download-btn i {
             margin-right: 10px;
         }
         
-        /* Camera View */
-        .camera-view {
-            width: 100%;
-            height: 100%;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .camera-view.active {
-            display: flex;
-        }
-        
-        .camera-container {
-            width: 100%;
-            max-width: 500px;
-            height: 400px;
-            background-color: #111;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            position: relative;
-        }
-        
-        #videoElement {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .camera-controls {
-            display: flex;
-            gap: 20px;
-        }
-        
-        .capture-btn, .back-btn {
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .capture-btn {
-            background-color: var(--accent);
-            color: var(--black);
-            border: none;
-        }
-        
-        .capture-btn:hover {
-            background-color: #ddd;
-        }
-        
-        .back-btn {
-            background-color: transparent;
-            color: var(--white);
-            border: 2px solid var(--white);
-        }
-        
-        .back-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
         /* Footer */
         footer {
             text-align: center;
             padding: 20px 0;
-            border-top: 1px solid var(--gray-light);
             color: #888;
             font-size: 0.9rem;
+            margin-top: 30px;
+            width: 100%;
+            border-top: 1px solid var(--gray-light);
         }
         
         /* Responsive */
         @media (max-width: 768px) {
-            .main-content {
-                flex-direction: column;
-            }
-            
             h1 {
-                font-size: 2.5rem;
-            }
-            
-            .photo-preview-container {
-                min-height: 300px;
-            }
-            
-            .camera-container {
-                height: 300px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
             .tagline {
                 font-size: 1rem;
             }
             
-            .controls-section, .preview-section {
+            .main-card {
                 padding: 20px;
             }
             
-            .photo-preview-container {
-                min-height: 250px;
+            .decor-top {
+                font-size: 22px;
+            }
+            
+            #timer {
+                font-size: 80px;
+            }
+            
+            .count-btn {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            body {
+                padding: 15px;
+            }
+            
+            .main-card {
+                padding: 15px;
+            }
+            
+            .photo-count-buttons {
+                flex-wrap: wrap;
+            }
+            
+            .count-btn {
+                flex: 1 0 calc(50% - 10px);
+                max-width: none;
+            }
+            
+            #timer {
+                font-size: 60px;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="header-decoration decoration-1">✮</div>
-        <div class="header-decoration decoration-2">♫</div>
-        <div class="header-decoration decoration-3">✰</div>
+    <!-- Decorative Elements -->
+    <div class="decor-top">✮ ♡ ♥︎ ♪ ♫ ♬ ✯ ✰</div>
+    
+    <!-- Main Title -->
+    <h1>E-Photoboth</h1>
+    <p class="tagline">Capture your best moment with us!</p>
+    
+    <!-- Main Card with Camera and Controls -->
+    <div class="main-card">
+        <!-- Camera View -->
+        <div class="camera-container">
+            <video id="videoElement" autoplay playsinline></video>
+            <div id="timer">3</div>
+        </div>
         
-        <div class="container">
-            <h1>E-Photoboth</h1>
-            <p class="tagline">Take photos anywhere you want</p>
-        </div>
-    </header>
-    
-    <main class="container">
-        <div class="main-content">
-            <!-- Controls Section -->
-            <section class="controls-section">
-                <div class="control-group">
-                    <h2 class="control-title">
-                        <i class="fas fa-camera"></i> Camera Control
-                    </h2>
-                    <button class="camera-btn" id="startCameraBtn">
-                        <i class="fas fa-play-circle"></i> Start Camera
-                    </button>
-                </div>
-                
-                <div class="control-group">
-                    <h2 class="control-title">
-                        <i class="fas fa-th"></i> Photo Layout
-                    </h2>
-                    <div class="photo-count-buttons">
-                        <button class="count-btn active" data-count="1">Single</button>
-                        <button class="count-btn" data-count="3">3 Photos</button>
-                        <button class="count-btn" data-count="4">4 Photos</button>
-                        <button class="count-btn" data-count="6">6 Photos</button>
-                    </div>
-                </div>
-                
-                <div class="control-group">
-                    <h2 class="control-title">
-                        <i class="fas fa-font"></i> Add Text to Photo
-                    </h2>
-                    <input type="text" class="text-input" id="photoText" placeholder="Enter text to display on your photos..." maxlength="30">
-                    <small style="color: #aaa; font-size: 0.9rem;">Text will appear at the bottom of each photo</small>
-                </div>
-                
-                <div class="control-group">
-                    <h2 class="control-title">
-                        <i class="fas fa-info-circle"></i> Instructions
-                    </h2>
-                    <ol style="padding-left: 20px; color: #ccc;">
-                        <li>Click "Start Camera" to activate your camera</li>
-                        <li>Select how many photos you want</li>
-                        <li>Add text if desired</li>
-                        <li>Take photos using the capture button</li>
-                        <li>Download your photo collage</li>
-                    </ol>
-                </div>
-            </section>
+        <!-- Controls Panel -->
+        <div class="controls-panel">
+            <!-- Text Input -->
+            <div class="control-group">
+                <label class="control-label">Edit Your Photo Text:</label>
+                <input type="text" class="text-input" id="photoText" placeholder="Example: My Best Moment Ever ✨" maxlength="40">
+            </div>
             
-            <!-- Preview Section -->
-            <section class="preview-section">
-                <!-- Background decorations -->
-                <div class="background-decorations" id="backgroundDecorations"></div>
-                
-                <!-- Camera View (hidden by default) -->
-                <div class="camera-view" id="cameraView">
-                    <div class="camera-container">
-                        <video id="videoElement" autoplay playsinline></video>
-                    </div>
-                    <div class="camera-controls">
-                        <button class="capture-btn" id="captureBtn">
-                            <i class="fas fa-camera"></i> Capture Photo
-                        </button>
-                        <button class="back-btn" id="backBtn">
-                            <i class="fas fa-arrow-left"></i> Back to Preview
-                        </button>
-                    </div>
+            <!-- Photo Count Selection -->
+            <div class="control-group">
+                <label class="control-label">Select Number of Photos:</label>
+                <div class="photo-count-buttons">
+                    <button class="count-btn" data-count="2">2 Photos</button>
+                    <button class="count-btn active" data-count="3">3 Photos</button>
+                    <button class="count-btn" data-count="4">4 Photos</button>
                 </div>
-                
-                <!-- Photo Preview (shown by default) -->
-                <div class="photo-preview-container">
-                    <div class="photo-preview" id="photoPreview">
-                        <div class="placeholder-text">
-                            <i class="fas fa-camera" style="font-size: 4rem; margin-bottom: 20px; color: #555;"></i>
-                            <p style="font-size: 1.2rem; color: #888;">Your photos will appear here</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Watermark -->
-                <div class="watermark">created by syafizam</div>
-                
-                <!-- Download Button -->
-                <button class="download-btn" id="downloadBtn">
-                    <i class="fas fa-download"></i> Download Photo Collage
-                </button>
-            </section>
+            </div>
+            
+            <!-- Capture Button -->
+            <button class="capture-btn" id="captureBtn">
+                <i class="fas fa-camera"></i> START PHOTO SESSION
+            </button>
         </div>
-    </main>
+    </div>
     
-    <footer>
-        <div class="container">
-            <p>E-Photoboth &copy; 2023 | Take photos anywhere you want</p>
-            <p style="margin-top: 5px; font-size: 0.8rem;">Made with <i class="fas fa-heart" style="color: #ff4757;"></i> for memorable moments</p>
+    <!-- Result Preview Section -->
+    <div class="result-container" id="resultContainer">
+        <h2 class="result-title">✮ Your Photo Preview ✮</h2>
+        <div class="strip-frame">
+            <canvas id="stripCanvas"></canvas>
         </div>
+        <button class="download-btn" id="downloadBtn">
+            <i class="fas fa-download"></i> DOWNLOAD HD IMAGE
+        </button>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <p>E-Photoboth &copy; 2023 | Capture your best moment with us!</p>
+        <p style="margin-top: 5px; font-size: 0.8rem;">Made with <i class="fas fa-heart" style="color: #ff4757;"></i> for memorable moments</p>
     </footer>
 
     <script>
         // DOM Elements
-        const startCameraBtn = document.getElementById('startCameraBtn');
-        const cameraView = document.getElementById('cameraView');
-        const photoPreview = document.getElementById('photoPreview');
-        const captureBtn = document.getElementById('captureBtn');
-        const backBtn = document.getElementById('backBtn');
         const videoElement = document.getElementById('videoElement');
-        const countButtons = document.querySelectorAll('.count-btn');
-        const downloadBtn = document.getElementById('downloadBtn');
+        const timerEl = document.getElementById('timer');
+        const captureBtn = document.getElementById('captureBtn');
         const photoTextInput = document.getElementById('photoText');
-        const backgroundDecorations = document.getElementById('backgroundDecorations');
+        const resultContainer = document.getElementById('resultContainer');
+        const stripCanvas = document.getElementById('stripCanvas');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const countButtons = document.querySelectorAll('.count-btn');
         
         // State variables
-        let photoCount = 1;
-        let capturedPhotos = [];
+        let shotCount = 3;
+        let photos = [];
         let stream = null;
-        let photoText = '';
         
-        // Generate random background decorations
-        function generateDecorations() {
-            const decorations = ['✮', '✰', '✯', '♡', '♥︎', '♫', '♬', '♪'];
-            backgroundDecorations.innerHTML = '';
-            
-            for (let i = 0; i < 15; i++) {
-                const decoration = document.createElement('div');
-                decoration.className = 'decoration-item';
-                decoration.textContent = decorations[Math.floor(Math.random() * decorations.length)];
-                decoration.style.left = `${Math.random() * 100}%`;
-                decoration.style.top = `${Math.random() * 100}%`;
-                decoration.style.fontSize = `${Math.random() * 20 + 20}px`;
-                decoration.style.transform = `rotate(${Math.random() * 360}deg)`;
-                backgroundDecorations.appendChild(decoration);
-            }
-        }
-        
-        // Initialize background decorations
-        generateDecorations();
-        
-        // Photo count selection
-        countButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                countButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                photoCount = parseInt(button.dataset.count);
-                updatePhotoPreviewLayout();
-            });
-        });
-        
-        // Update photo preview layout based on selected count
-        function updatePhotoPreviewLayout() {
-            photoPreview.innerHTML = '';
-            
-            if (capturedPhotos.length === 0) {
-                // Show placeholder if no photos
-                const placeholder = document.createElement('div');
-                placeholder.className = 'placeholder-text';
-                placeholder.innerHTML = `
-                    <i class="fas fa-camera" style="font-size: 4rem; margin-bottom: 20px; color: #555;"></i>
-                    <p style="font-size: 1.2rem; color: #888;">Your photos will appear here</p>
-                `;
-                photoPreview.appendChild(placeholder);
-                return;
-            }
-            
-            // Calculate layout based on photo count
-            let cols, rows;
-            switch(photoCount) {
-                case 1:
-                    cols = 1; rows = 1;
-                    break;
-                case 3:
-                    cols = 3; rows = 1;
-                    break;
-                case 4:
-                    cols = 2; rows = 2;
-                    break;
-                case 6:
-                    cols = 3; rows = 2;
-                    break;
-                default:
-                    cols = 2; rows = 2;
-            }
-            
-            // Set grid styles
-            photoPreview.style.display = 'grid';
-            photoPreview.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-            photoPreview.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-            photoPreview.style.gap = '5px';
-            photoPreview.style.width = '100%';
-            photoPreview.style.height = '100%';
-            
-            // Add captured photos to preview
-            for (let i = 0; i < photoCount; i++) {
-                const photoItem = document.createElement('div');
-                photoItem.className = 'photo-item';
-                
-                // Use captured photo or placeholder
-                if (i < capturedPhotos.length) {
-                    const img = document.createElement('img');
-                    img.src = capturedPhotos[i];
-                    photoItem.appendChild(img);
-                    
-                    // Add text if provided
-                    if (photoText) {
-                        const textOverlay = document.createElement('div');
-                        textOverlay.className = 'photo-text';
-                        textOverlay.textContent = photoText;
-                        photoItem.appendChild(textOverlay);
-                    }
-                } else {
-                    // Placeholder for future photos
-                    photoItem.style.backgroundColor = '#222';
-                    photoItem.style.display = 'flex';
-                    photoItem.style.alignItems = 'center';
-                    photoItem.style.justifyContent = 'center';
-                    
-                    const icon = document.createElement('i');
-                    icon.className = 'fas fa-user';
-                    icon.style.fontSize = '3rem';
-                    icon.style.color = '#444';
-                    photoItem.appendChild(icon);
-                }
-                
-                photoPreview.appendChild(photoItem);
-            }
-        }
-        
-        // Start camera
-        startCameraBtn.addEventListener('click', async () => {
+        // Initialize camera
+        async function initCamera() {
             try {
                 stream = await navigator.mediaDevices.getUserMedia({
                     video: { 
@@ -646,188 +418,204 @@
                 });
                 
                 videoElement.srcObject = stream;
-                cameraView.classList.add('active');
-                photoPreview.style.display = 'none';
-                
             } catch (error) {
-                alert('Unable to access the camera. Please make sure you have granted camera permissions.');
+                alert('Unable to access camera. Please make sure you have granted camera permissions.');
                 console.error('Camera error:', error);
-            }
-        });
-        
-        // Capture photo
-        captureBtn.addEventListener('click', () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = videoElement.videoWidth;
-            canvas.height = videoElement.videoHeight;
-            
-            const context = canvas.getContext('2d');
-            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-            
-            // Convert to data URL and add to captured photos
-            const photoData = canvas.toDataURL('image/png');
-            capturedPhotos.push(photoData);
-            
-            // Update text from input
-            photoText = photoTextInput.value.trim();
-            
-            // Switch back to preview after capture
-            backToPreview();
-            
-            // Update preview
-            updatePhotoPreviewLayout();
-        });
-        
-        // Back to preview
-        backBtn.addEventListener('click', backToPreview);
-        
-        function backToPreview() {
-            cameraView.classList.remove('active');
-            photoPreview.style.display = 'grid';
-            
-            // Stop camera stream
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
+                
+                // Show placeholder if camera fails
+                videoElement.style.backgroundColor = '#111';
+                const errorMsg = document.createElement('div');
+                errorMsg.innerHTML = '<i class="fas fa-camera-slash" style="font-size: 3rem; margin-bottom: 15px;"></i><p>Camera not available</p>';
+                errorMsg.style.textAlign = 'center';
+                errorMsg.style.padding = '50px';
+                errorMsg.style.color = '#888';
+                videoElement.parentNode.appendChild(errorMsg);
             }
         }
         
-        // Download photo collage
-        downloadBtn.addEventListener('click', () => {
-            if (capturedPhotos.length === 0) {
-                alert('Please take at least one photo before downloading.');
-                return;
-            }
-            
-            // Create a temporary canvas for the collage
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            
-            // Set canvas size based on photo count
-            let collageWidth, collageHeight;
-            
-            switch(photoCount) {
-                case 1:
-                    collageWidth = 800;
-                    collageHeight = 600;
-                    break;
-                case 3:
-                    collageWidth = 1200;
-                    collageHeight = 400;
-                    break;
-                case 4:
-                    collageWidth = 800;
-                    collageHeight = 800;
-                    break;
-                case 6:
-                    collageWidth = 900;
-                    collageHeight = 600;
-                    break;
-                default:
-                    collageWidth = 800;
-                    collageHeight = 800;
-            }
-            
-            canvas.width = collageWidth;
-            canvas.height = collageHeight + 100; // Extra space for watermark
-            
-            // Fill background
-            ctx.fillStyle = '#0a0a0a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw decorations
-            const decorations = ['✮', '✰', '✯', '♡', '♥︎', '♫', '♬', '♪'];
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-            ctx.font = '30px Arial';
-            
-            for (let i = 0; i < 20; i++) {
-                const decoration = decorations[Math.floor(Math.random() * decorations.length)];
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
-                ctx.fillText(decoration, x, y);
-            }
-            
-            // Draw photos in grid
-            const cols = photoCount === 3 ? 3 : (photoCount <= 2 ? photoCount : Math.ceil(photoCount / 2));
-            const rows = photoCount <= 3 ? 1 : Math.ceil(photoCount / cols);
-            
-            const photoWidth = collageWidth / cols;
-            const photoHeight = collageHeight / rows;
-            
-            for (let i = 0; i < photoCount; i++) {
-                const col = i % cols;
-                const row = Math.floor(i / cols);
-                const x = col * photoWidth;
-                const y = row * photoHeight;
-                
-                // Draw photo border
-                ctx.fillStyle = '#333';
-                ctx.fillRect(x, y, photoWidth, photoHeight);
-                
-                // Draw actual photo if available
-                if (i < capturedPhotos.length) {
-                    const img = new Image();
-                    img.onload = () => {
-                        ctx.drawImage(img, x + 5, y + 5, photoWidth - 10, photoHeight - 10);
-                        
-                        // Draw text if provided
-                        if (photoText) {
-                            ctx.fillStyle = '#ffffff';
-                            ctx.font = 'bold 24px Poppins';
-                            ctx.textAlign = 'center';
-                            ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
-                            ctx.shadowBlur = 4;
-                            ctx.fillText(photoText, x + photoWidth/2, y + photoHeight - 20);
-                            ctx.shadowBlur = 0;
-                        }
-                        
-                        // If this is the last image, trigger download
-                        if (i === Math.min(photoCount - 1, capturedPhotos.length - 1)) {
-                            setTimeout(() => {
-                                // Add watermark
-                                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
-                                ctx.font = 'italic 20px Poppins';
-                                ctx.textAlign = 'right';
-                                ctx.fillText('created by syafizam', canvas.width - 20, canvas.height - 40);
-                                
-                                // Add title
-                                ctx.fillStyle = '#ffffff';
-                                ctx.font = 'bold 36px Playfair Display';
-                                ctx.textAlign = 'center';
-                                ctx.fillText('E-Photoboth', canvas.width/2, canvas.height - 80);
-                                
-                                // Trigger download
-                                const link = document.createElement('a');
-                                link.download = `e-photoboth-${new Date().getTime()}.png`;
-                                link.href = canvas.toDataURL('image/png');
-                                link.click();
-                            }, 100);
-                        }
-                    };
-                    img.src = capturedPhotos[i];
-                } else {
-                    // Draw placeholder for missing photos
-                    ctx.fillStyle = '#222';
-                    ctx.fillRect(x + 5, y + 5, photoWidth - 10, photoHeight - 10);
-                    
-                    // Draw placeholder icon
-                    ctx.fillStyle = '#444';
-                    ctx.font = 'bold 48px FontAwesome';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText('', x + photoWidth/2, y + photoHeight/2);
-                }
-            }
+        // Initialize camera on page load
+        initCamera();
+        
+        // Photo count selection
+        countButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                countButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                shotCount = parseInt(button.dataset.count);
+            });
         });
         
-        // Initialize with one photo layout
-        updatePhotoPreviewLayout();
+        // Capture photo session
+        captureBtn.addEventListener('click', async () => {
+            photos = [];
+            resultContainer.style.display = 'none';
+            captureBtn.disabled = true;
+            
+            // Capture multiple photos based on selected count
+            for (let i = 0; i < shotCount; i++) {
+                // Show countdown timer
+                timerEl.style.display = 'block';
+                
+                // Countdown from 3
+                for (let count = 3; count > 0; count--) {
+                    timerEl.textContent = count;
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+                
+                timerEl.style.display = 'none';
+                
+                // Capture photo
+                const canvas = document.createElement('canvas');
+                canvas.width = videoElement.videoWidth;
+                canvas.height = videoElement.videoHeight;
+                const ctx = canvas.getContext('2d');
+                
+                // Flip horizontally for selfie view
+                ctx.translate(canvas.width, 0);
+                ctx.scale(-1, 1);
+                ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                
+                // Convert to data URL
+                photos.push(canvas.toDataURL('image/jpeg', 0.9));
+                
+                // Short pause between photos
+                await new Promise(resolve => setTimeout(resolve, 600));
+            }
+            
+            // Draw photo strip
+            drawStrip();
+            captureBtn.disabled = false;
+        });
         
-        // Add text input event listener
+        // Draw photo strip with decorations
+        function drawStrip() {
+            const ctx = stripCanvas.getContext('2d');
+            const userText = photoTextInput.value || "My Best Moment ✨";
+            
+            // Canvas dimensions
+            const photoWidth = 700; // Width of each photo
+            const photoHeight = 500; // Height of each photo
+            const padding = 40; // White space around photos
+            const headerHeight = 180; // Space for title and decorations
+            const footerHeight = 100; // Space for watermark
+            
+            // Calculate total canvas size
+            stripCanvas.width = photoWidth + (padding * 2);
+            stripCanvas.height = (photoHeight * shotCount) + (padding * (shotCount + 1)) + headerHeight + footerHeight;
+            
+            // Pure white background
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
+            
+            // Draw header with user text
+            ctx.fillStyle = "black";
+            
+            // Main title
+            ctx.font = "bold 50px 'Playfair Display', serif";
+            ctx.textAlign = "center";
+            ctx.fillText("E-Photoboth", stripCanvas.width / 2, 60);
+            
+            // User text
+            ctx.font = "bold 36px 'Poppins', sans-serif";
+            ctx.fillText(userText, stripCanvas.width / 2, 120);
+            
+            // Decorative symbols
+            ctx.font = "28px 'Arial'";
+            const symbols = ["✮", "✰", "✯", "♡", "♥︎", "♫", "♬", "♪"];
+            let symbolsText = "";
+            for (let i = 0; i < 8; i++) {
+                symbolsText += symbols[i] + " ";
+            }
+            ctx.fillText(symbolsText, stripCanvas.width / 2, 160);
+            
+            // Track loaded images
+            let loadedImages = 0;
+            
+            // Draw each photo
+            photos.forEach((photoSrc, index) => {
+                const img = new Image();
+                img.onload = () => {
+                    // Calculate position for this photo
+                    const yPos = headerHeight + padding + (index * (photoHeight + padding));
+                    
+                    // Draw rounded rectangle for photo background
+                    ctx.save();
+                    roundRect(ctx, padding, yPos, photoWidth, photoHeight, 15);
+                    ctx.clip();
+                    
+                    // Draw the photo
+                    ctx.drawImage(img, padding, yPos, photoWidth, photoHeight);
+                    ctx.restore();
+                    
+                    // Add decorative elements on corners
+                    ctx.font = "40px Arial";
+                    ctx.fillStyle = "black";
+                    
+                    // Top-left decoration
+                    ctx.fillText("♡", padding + 30, yPos + 50);
+                    
+                    // Bottom-right decoration
+                    ctx.fillText("✮", padding + photoWidth - 30, yPos + photoHeight - 20);
+                    
+                    // Photo number indicator
+                    ctx.font = "bold 24px 'Poppins'";
+                    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+                    ctx.fillText(`Photo ${index + 1}`, padding + 30, yPos + photoHeight - 30);
+                    
+                    loadedImages++;
+                    
+                    // When all photos are loaded, show result and add watermark
+                    if (loadedImages === shotCount) {
+                        // Add watermark at the bottom
+                        ctx.fillStyle = "#666";
+                        ctx.font = "italic 22px 'Poppins'";
+                        ctx.textAlign = "center";
+                        ctx.fillText("created by syafizam ✨", stripCanvas.width / 2, stripCanvas.height - 40);
+                        
+                        // Show result container
+                        resultContainer.style.display = "flex";
+                        
+                        // Scroll to results
+                        window.scrollTo({
+                            top: resultContainer.offsetTop - 50,
+                            behavior: 'smooth'
+                        });
+                    }
+                };
+                img.src = photoSrc;
+            });
+        }
+        
+        // Helper function for rounded rectangles
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+        
+        // Download photo strip
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = `E-Photoboth_${Date.now()}.png`;
+            link.href = stripCanvas.toDataURL('image/png', 1.0);
+            link.click();
+        });
+        
+        // Update photo text in real-time
         photoTextInput.addEventListener('input', () => {
-            photoText = photoTextInput.value.trim();
-            updatePhotoPreviewLayout();
+            // If we already have photos, update the strip
+            if (photos.length > 0) {
+                drawStrip();
+            }
         });
     </script>
 </body>
-    </html>
+            </html>
