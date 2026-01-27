@@ -3,241 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Syafizam Cyber Photobooth</title>
+    <title>✨ Cute Cyber Photobooth ✨</title>
     <style>
         :root {
-            --primary: #ff4d4d;
-            --bg: #0a0a0a;
-            --card: #1a1a1a;
+            --accent: #ff79c6; /* Pink Cute */
+            --bg: #282a36;    /* Dark Theme */
+            --panel: #44475a;
+            --text: #f8f8f2;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', cursive, sans-serif;
             background-color: var(--bg);
-            color: white;
+            color: var(--text);
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
+            padding: 20px;
         }
 
-        .container {
+        /* Header & Decorations */
+        .header {
             text-align: center;
-            width: 90%;
-            max-width: 600px;
+            margin-bottom: 20px;
         }
 
-        .camera-container {
+        .header h1 {
+            color: var(--accent);
+            text-shadow: 0 0 10px rgba(255, 121, 198, 0.5);
+            margin: 10px 0;
+        }
+
+        /* Camera Box */
+        .main-card {
+            background: var(--panel);
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 500px;
             position: relative;
-            background: var(--card);
-            border: 4px solid var(--primary);
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(255, 77, 77, 0.3);
-            margin-bottom: 20px;
         }
 
         video {
             width: 100%;
-            display: block;
-            transform: scaleX(-1); /* Mirror view */
+            border-radius: 12px;
+            background: #000;
+            transform: scaleX(-1);
         }
 
-        #timer {
+        #timer-overlay {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 8rem;
+            font-size: 100px;
             font-weight: bold;
-            color: var(--primary);
-            text-shadow: 0 0 15px black;
+            color: var(--accent);
+            pointer-events: none;
             display: none;
         }
 
-        .controls {
+        /* Controls */
+        .setup-zone {
+            margin-top: 15px;
             display: flex;
+            flex-direction: column;
             gap: 15px;
-            justify-content: center;
-            margin-bottom: 20px;
         }
 
-        button {
-            padding: 12px 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            background: var(--primary);
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .choice-btn {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--text);
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .choice-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        #snap-btn {
+            background: var(--accent);
             color: white;
             border: none;
-            border-radius: 50px;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button:disabled {
-            background: #555;
-            cursor: not-allowed;
-        }
-
-        #status {
-            margin-top: 10px;
             font-size: 1.1rem;
-            color: #aaa;
         }
+
+        #snap-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* Preview Area */
-        #preview-canvas {
-            display: none;
-            max-width: 200px;
-            border: 2px solid white;
-            margin-top: 20px;
+        .result-zone {
+            margin-top: 30px;
+            display: none; /* Hidden until photo taken */
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
         }
+
+        .strip-preview {
+            background: white;
+            padding: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            max-width: 300px;
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+        }
+
+        .download-btn {
+            background: #50fa7b; /* Green */
+            color: #282a36;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .cute-decor { font-size: 24px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>📸 SYAFIZAM PHOTOBOOTH</h1>
-        <p>Cybersecurity Expert Edition</p>
+    <div class="header">
+        <div class="cute-decor">✨ 🧸 🎀 🧸 ✨</div>
+        <h1>SYAFIZAM PHOTO STORY</h1>
+        <p>Tangkap memori unik anda di sini!</p>
+    </div>
 
-        <div class="camera-container">
-            <video id="video" autoplay playsinline></video>
-            <div id="timer">3</div>
+    <div class="main-card">
+        <video id="video" autoplay playsinline></video>
+        <div id="timer-overlay">3</div>
+
+        <div class="setup-zone">
+            <div style="text-align:center">Pilih bilangan gambar:</div>
+            <div class="btn-group">
+                <button class="choice-btn" onclick="setShots(2)">2 Gambar</button>
+                <button class="choice-btn active" onclick="setShots(3)">3 Gambar</button>
+                <button class="choice-btn" onclick="setShots(4)">4 Gambar</button>
+            </div>
+            <button id="snap-btn">MULAI SESI FOTO 📸</button>
         </div>
+    </div>
 
-        <div class="controls">
-            <button id="startBtn">MULA SESI (4 GAMBAR)</button>
+    <div class="result-zone" id="resultZone">
+        <h3>✨ Preview Hasil ✨</h3>
+        <div class="strip-preview">
+            <canvas id="mainCanvas"></canvas>
         </div>
-
-        <div id="status">Sedia untuk beraksi...</div>
-        
-        <canvas id="hiddenCanvas" style="display:none;"></canvas>
+        <button class="download-btn" id="downloadBtn">SIMPAN GAMBAR 📥</button>
+        <p style="font-size: 0.8rem; margin-top:10px;">*Klik simpan untuk kualiti HD</p>
     </div>
 
     <script>
         const video = document.getElementById('video');
-        const timerEl = document.getElementById('timer');
-        const startBtn = document.getElementById('startBtn');
-        const statusEl = document.getElementById('status');
-        const hiddenCanvas = document.getElementById('hiddenCanvas');
+        const timerEl = document.getElementById('timer-overlay');
+        const snapBtn = document.getElementById('snap-btn');
+        const resultZone = document.getElementById('resultZone');
+        const mainCanvas = document.getElementById('mainCanvas');
+        const downloadBtn = document.getElementById('downloadBtn');
 
-        let capturedImages = [];
-        const TOTAL_SHOTS = 4;
-        const COUNTDOWN_TIME = 3;
+        let totalShots = 3;
+        let capturedFrames = [];
 
-        // Akses Kamera
-        async function setupCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { width: 1280, height: 720 }, 
-                    audio: false 
-                });
-                video.srcObject = stream;
-            } catch (err) {
-                statusEl.innerText = "Error: Kamera tidak dijumpai!";
-                console.error(err);
-            }
+        // 1. Setup Camera
+        navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 } })
+            .then(stream => { video.srcObject = stream; })
+            .catch(err => alert("Kamera tidak diakses!"));
+
+        // 2. Pilih jumlah gambar
+        function setShots(num) {
+            totalShots = num;
+            document.querySelectorAll('.choice-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText.includes(num));
+            });
         }
 
-        // Fungsi Ambil Gambar (Single Frame)
-        function captureFrame() {
-            const ctx = hiddenCanvas.getContext('2d');
-            hiddenCanvas.width = video.videoWidth;
-            hiddenCanvas.height = video.videoHeight;
-            
-            // Mirroring balik supaya gambar tak terbalik
-            ctx.translate(hiddenCanvas.width, 0);
-            ctx.scale(-1, 1);
-            ctx.drawImage(video, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
-            
-            return hiddenCanvas.toDataURL('image/png');
-        }
+        // 3. Ambil Gambar
+        snapBtn.onclick = async () => {
+            capturedFrames = [];
+            snapBtn.disabled = true;
+            resultZone.style.display = 'none';
 
-        // Logik Sesi Foto
-        startBtn.addEventListener('click', async () => {
-            capturedImages = [];
-            startBtn.disabled = true;
-            
-            for (let i = 1; i <= TOTAL_SHOTS; i++) {
-                statusEl.innerText = `Sedia untuk gambar ke-${i}...`;
-                
-                // Countdown Logic
+            for (let i = 0; i < totalShots; i++) {
+                // Countdown
                 timerEl.style.display = 'block';
-                for (let count = COUNTDOWN_TIME; count > 0; count--) {
-                    timerEl.innerText = count;
+                for (let c = 3; c > 0; c--) {
+                    timerEl.innerText = c;
                     await new Promise(r => setTimeout(r, 1000));
                 }
                 timerEl.style.display = 'none';
 
-                // Flash effect (Simulasi)
-                video.style.opacity = '0.5';
-                const imgData = captureFrame();
-                capturedImages.push(imgData);
-                setTimeout(() => video.style.opacity = '1', 100);
-
-                statusEl.innerText = `Gambar ${i} berjaya diambil!`;
-                await new Promise(r => setTimeout(r, 1000));
+                // Capture
+                const tempCanvas = document.createElement('canvas');
+                tempCanvas.width = video.videoWidth;
+                tempCanvas.height = video.videoHeight;
+                const ctx = tempCanvas.getContext('2d');
+                ctx.translate(tempCanvas.width, 0);
+                ctx.scale(-1, 1);
+                ctx.drawImage(video, 0, 0);
+                capturedFrames.push(tempCanvas.toDataURL('image/jpeg', 0.9));
+                
+                // Gap
+                await new Promise(r => setTimeout(r, 500));
             }
 
-            statusEl.innerText = "Sedang menjana Photo Strip...";
-            generateStrip();
-        });
+            renderStrip();
+            snapBtn.disabled = false;
+        };
 
-        // Gabungkan ke format Strip "Don't Look Up"
-        function generateStrip() {
-            const stripCanvas = document.createElement('canvas');
-            const ctx = stripCanvas.getContext('2d');
+        // 4. Generate Strip (Preview Mode)
+        function renderStrip() {
+            const ctx = mainCanvas.getContext('2d');
+            const w = 600; 
+            const h = 450;
+            const pad = 30;
+            const headerSpace = 100;
 
-            const w = 600; // Lebar strip
-            const h = 450; // Tinggi satu gambar
-            const padding = 40;
-            const bottomSpace = 150; // Ruang untuk teks di bawah
+            mainCanvas.width = w + (pad * 2);
+            mainCanvas.height = (h * totalShots) + (pad * (totalShots + 1)) + headerSpace;
 
-            stripCanvas.width = w + (padding * 2);
-            stripCanvas.height = (h * TOTAL_SHOTS) + (padding * (TOTAL_SHOTS + 1)) + bottomSpace;
-
-            // Background Putih (atau Hitam ikut suka awak)
+            // Background Putih Bersih
             ctx.fillStyle = "white";
-            ctx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
+            ctx.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
 
-            let loadedCount = 0;
-            capturedImages.forEach((src, index) => {
+            // Header Teks Menarik di Atas
+            ctx.fillStyle = "#ff79c6";
+            ctx.font = "bold 35px 'Comic Sans MS', cursive";
+            ctx.textAlign = "center";
+            ctx.fillText("✨ PHOTO STORY ✨", mainCanvas.width / 2, 60);
+            
+            ctx.fillStyle = "#444";
+            ctx.font = "16px Arial";
+            ctx.fillText("Captured by Syafizam Photobooth", mainCanvas.width / 2, 85);
+
+            // Lukis Gambar
+            let loaded = 0;
+            capturedFrames.forEach((src, i) => {
                 const img = new Image();
                 img.onload = () => {
-                    const y = padding + (index * (h + padding));
-                    ctx.drawImage(img, padding, y, w, h);
-                    
-                    loadedCount++;
-                    if (loadedCount === TOTAL_SHOTS) {
-                        // Tambah Teks "DON'T LOOK UP" atau Brand awak
-                        ctx.fillStyle = "black";
-                        ctx.font = "bold 40px Arial";
-                        ctx.textAlign = "center";
-                        ctx.fillText("DON'T LXXXK UP", stripCanvas.width / 2, stripCanvas.height - 80);
-                        
-                        ctx.font = "20px Arial";
-                        ctx.fillText("SYAFIZAM CYBERSECURITY EDITION", stripCanvas.width / 2, stripCanvas.height - 40);
-
-                        downloadResult(stripCanvas);
+                    ctx.drawImage(img, pad, headerSpace + pad + (i * (h + pad)), w, h);
+                    loaded++;
+                    if (loaded === totalShots) {
+                        resultZone.style.display = 'flex';
+                        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
                     }
                 };
                 img.src = src;
             });
         }
 
-        function downloadResult(canvas) {
+        // 5. Download
+        downloadBtn.onclick = () => {
             const link = document.createElement('a');
-            link.download = `Syafizam_Photobooth_${Date.now()}.png`;
-            link.href = canvas.toDataURL('image/png');
+            link.download = `PhotoStory_${Date.now()}.png`;
+            link.href = mainCanvas.toDataURL('image/png');
             link.click();
-            
-            statusEl.innerText = "Selesai! Gambar telah dimuat turun.";
-            startBtn.disabled = false;
-        }
-
-        setupCamera();
+        };
     </script>
 </body>
 </html>
