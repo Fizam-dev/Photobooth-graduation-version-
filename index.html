@@ -1,714 +1,833 @@
 <!DOCTYPE html>
-<html lang="ms">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✮ Syafizam Premium Photobooth ✮</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet">
+    <title>E-Photoboth - Take Photos Anywhere You Want</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #ff79c6;
-            --secondary: #bd93f9;
-            --dark: #0f0f15;
-            --darker: #0a0a0e;
-            --light: #f8f8f2;
-            --accent-glow: rgba(255, 121, 198, 0.3);
-            --glass: rgba(255, 255, 255, 0.07);
-            --glass-border: rgba(255, 255, 255, 0.15);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
+        :root {
+            --black: #0a0a0a;
+            --white: #f5f5f5;
+            --gray-dark: #1a1a1a;
+            --gray-light: #333;
+            --accent: #ffffff;
+        }
+        
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, #1a1a25 100%);
-            color: var(--light);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            position: relative;
+            background-color: var(--black);
+            color: var(--white);
+            line-height: 1.6;
             overflow-x: hidden;
         }
-
-        /* Background decoration */
-        .bg-decoration {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: -1;
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 1px solid var(--gray-light);
+            position: relative;
             overflow: hidden;
         }
-
-        .bg-element {
+        
+        .header-decoration {
             position: absolute;
-            color: rgba(255, 255, 255, 0.03);
-            font-size: 30px;
-            animation: float 20s infinite linear;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.1);
+            z-index: -1;
         }
-
-        @keyframes float {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-1000px) rotate(360deg); }
-        }
-
-        /* Header styling */
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .decor-top {
-            font-size: 32px;
-            margin-bottom: 10px;
-            color: var(--primary);
-            letter-spacing: 10px;
-        }
-
-        .title {
-            font-family: 'Dancing Script', cursive;
+        
+        .decoration-1 { top: 10px; left: 10%; }
+        .decoration-2 { top: 30px; right: 15%; }
+        .decoration-3 { bottom: 20px; left: 20%; }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
             font-size: 3.5rem;
             font-weight: 700;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, #ccc);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 10px;
-            text-shadow: 0 0 30px var(--accent-glow);
         }
-
-        .subtitle {
-            font-size: 1rem;
-            color: #aaa;
+        
+        .tagline {
+            font-size: 1.2rem;
             font-weight: 300;
-            letter-spacing: 3px;
-            margin-top: 5px;
+            color: #aaa;
+            margin-bottom: 20px;
         }
-
-        /* Main card styling */
-        .main-card {
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 30px;
-            padding: 30px;
-            width: 100%;
-            max-width: 600px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+        
+        /* Main Layout */
+        .main-content {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 30px 0;
+            gap: 30px;
+        }
+        
+        .controls-section {
+            flex: 1;
+            min-width: 300px;
+            background-color: var(--gray-dark);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .preview-section {
+            flex: 2;
+            min-width: 300px;
+            background-color: var(--gray-dark);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
-            z-index: 2;
-            margin-bottom: 30px;
         }
-
-        .main-card::before {
-            content: '';
+        
+        /* Controls */
+        .control-group {
+            margin-bottom: 25px;
+        }
+        
+        .control-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: var(--white);
+        }
+        
+        .control-title i {
+            margin-right: 10px;
+            color: var(--accent);
+        }
+        
+        .photo-count-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .count-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 12px 5px;
+            background-color: var(--gray-light);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            color: var(--white);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .count-btn:hover {
+            background-color: #444;
+        }
+        
+        .count-btn.active {
+            background-color: var(--black);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--gray-light);
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: var(--white);
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .camera-btn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--black);
+            color: var(--white);
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+        
+        .camera-btn:hover {
+            background-color: var(--accent);
+            color: var(--black);
+        }
+        
+        .camera-btn i {
+            margin-right: 10px;
+        }
+        
+        /* Preview Section */
+        .photo-preview-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            background-color: var(--black);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .photo-preview {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .photo-item {
+            position: relative;
+            margin: 5px;
+            overflow: hidden;
+            background-color: #222;
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .photo-text {
             position: absolute;
-            top: 0;
+            bottom: 15px;
             left: 0;
             right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary));
-            border-radius: 30px 30px 0 0;
-        }
-
-        /* Video container */
-        .video-container {
-            position: relative;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            margin-bottom: 25px;
-            background: #000;
-        }
-
-        video {
-            width: 100%;
-            display: block;
-            border-radius: 20px;
-            transform: scaleX(-1); /* Mirror effect for front camera */
-        }
-
-        #timer {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 120px;
-            font-weight: 800;
-            color: var(--primary);
-            text-shadow: 0 0 30px rgba(0, 0, 0, 0.9);
-            display: none;
-            z-index: 5;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: translate(-50%, -50%) scale(1); }
-            50% { transform: translate(-50%, -50%) scale(1.1); }
-            100% { transform: translate(-50%, -50%) scale(1); }
-        }
-
-        /* Customization UI */
-        .ui-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .input-group {
-            text-align: left;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 14px;
-            color: #ccc;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 15px 20px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            color: white;
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 2px var(--accent-glow);
-        }
-
-        .btn-row {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .opt-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ddd;
-            padding: 12px 25px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-size: 16px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            flex: 1;
-        }
-
-        .opt-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .opt-btn.active {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border-color: transparent;
-            color: white;
-            box-shadow: 0 5px 15px rgba(255, 121, 198, 0.3);
-        }
-
-        #snap-btn {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            border: none;
-            padding: 18px 30px;
-            border-radius: 20px;
-            color: white;
+            text-align: center;
+            color: var(--white);
             font-weight: 600;
             font-size: 1.2rem;
-            cursor: pointer;
-            margin-top: 10px;
-            font-family: 'Poppins', sans-serif;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(255, 121, 198, 0.2);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+            padding: 0 10px;
         }
-
-        #snap-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 25px rgba(255, 121, 198, 0.3);
-        }
-
-        #snap-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Result Preview */
-        .result-container {
-            margin-top: 40px;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            max-width: 800px;
-            z-index: 2;
-        }
-
-        .result-title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 2.8rem;
-            font-weight: 700;
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .strip-frame {
-            background: var(--darker);
-            padding: 30px;
-            border-radius: 25px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-        }
-
-        .strip-frame::before {
-            content: '✮♡♥︎♪♫♬';
-            position: absolute;
-            top: 10px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.1);
-            letter-spacing: 10px;
-        }
-
-        canvas {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            border-radius: 15px;
-        }
-
-        .dl-btn {
-            background: linear-gradient(45deg, #50fa7b, #37d67a);
-            color: #000;
-            padding: 18px 50px;
-            border-radius: 50px;
-            border: none;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-family: 'Poppins', sans-serif;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 20px rgba(80, 250, 123, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .dl-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 25px rgba(80, 250, 123, 0.3);
-        }
-
+        
         .watermark {
-            position: fixed;
+            position: absolute;
             bottom: 20px;
             right: 20px;
             color: rgba(255, 255, 255, 0.3);
-            font-size: 14px;
+            font-size: 0.9rem;
             font-style: italic;
-            z-index: 1;
         }
-
-        /* Responsive adjustments */
+        
+        .background-decorations {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+        
+        .decoration-item {
+            position: absolute;
+            font-size: 30px;
+            color: var(--white);
+        }
+        
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--gray-light);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            background-color: #444;
+        }
+        
+        .download-btn i {
+            margin-right: 10px;
+        }
+        
+        /* Camera View */
+        .camera-view {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .camera-view.active {
+            display: flex;
+        }
+        
+        .camera-container {
+            width: 100%;
+            max-width: 500px;
+            height: 400px;
+            background-color: #111;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        #videoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .camera-controls {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .capture-btn, .back-btn {
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .capture-btn {
+            background-color: var(--accent);
+            color: var(--black);
+            border: none;
+        }
+        
+        .capture-btn:hover {
+            background-color: #ddd;
+        }
+        
+        .back-btn {
+            background-color: transparent;
+            color: var(--white);
+            border: 2px solid var(--white);
+        }
+        
+        .back-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid var(--gray-light);
+            color: #888;
+            font-size: 0.9rem;
+        }
+        
+        /* Responsive */
         @media (max-width: 768px) {
-            .title {
-                font-size: 2.8rem;
-            }
-            
-            .main-card {
-                padding: 20px;
-                max-width: 95%;
-            }
-            
-            .opt-btn {
-                padding: 10px 15px;
-                font-size: 14px;
-            }
-            
-            #timer {
-                font-size: 80px;
-            }
-            
-            .result-title {
-                font-size: 2.2rem;
-            }
-            
-            .strip-frame {
-                padding: 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .title {
-                font-size: 2.2rem;
-            }
-            
-            .decor-top {
-                font-size: 24px;
-                letter-spacing: 5px;
-            }
-            
-            .btn-row {
+            .main-content {
                 flex-direction: column;
             }
             
-            .dl-btn {
-                padding: 15px 30px;
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .photo-preview-container {
+                min-height: 300px;
+            }
+            
+            .camera-container {
+                height: 300px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .tagline {
                 font-size: 1rem;
+            }
+            
+            .controls-section, .preview-section {
+                padding: 20px;
+            }
+            
+            .photo-preview-container {
+                min-height: 250px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Background decorative elements -->
-    <div class="bg-decoration" id="bgDecoration"></div>
-
-    <!-- Header -->
-    <div class="header">
-        <div class="decor-top">✮♡♥︎♪♫♬✯✰</div>
-        <h1 class="title">Syafizam Photobooth</h1>
-        <div class="subtitle">CAPTURE YOUR PRECIOUS MOMENTS</div>
-    </div>
-
-    <!-- Main card -->
-    <div class="main-card">
-        <div class="video-container">
-            <video id="video" autoplay playsinline></video>
-            <div id="timer">3</div>
+    <header>
+        <div class="header-decoration decoration-1">✮</div>
+        <div class="header-decoration decoration-2">♫</div>
+        <div class="header-decoration decoration-3">✰</div>
+        
+        <div class="container">
+            <h1>E-Photoboth</h1>
+            <p class="tagline">Take photos anywhere you want</p>
         </div>
-
-        <div class="ui-panel">
-            <div class="input-group">
-                <label><i class="fas fa-edit"></i> TAJUK FOTOSTORY ANDA:</label>
-                <input type="text" id="userText" placeholder="cth: Momen Manis Bersamamu ♥︎" value="Momen Manis Bersamamu ♥︎">
-            </div>
-
-            <div class="input-group">
-                <label><i class="fas fa-images"></i> BILANGAN GAMBAR:</label>
-                <div class="btn-row">
-                    <button class="opt-btn" onclick="setCount(2)">2 GAMBAR</button>
-                    <button class="opt-btn active" onclick="setCount(3)">3 GAMBAR</button>
-                    <button class="opt-btn" onclick="setCount(4)">4 GAMBAR</button>
+    </header>
+    
+    <main class="container">
+        <div class="main-content">
+            <!-- Controls Section -->
+            <section class="controls-section">
+                <div class="control-group">
+                    <h2 class="control-title">
+                        <i class="fas fa-camera"></i> Camera Control
+                    </h2>
+                    <button class="camera-btn" id="startCameraBtn">
+                        <i class="fas fa-play-circle"></i> Start Camera
+                    </button>
                 </div>
-            </div>
-
-            <button id="snap-btn">📸 MULA SESSI FOTO 📸</button>
+                
+                <div class="control-group">
+                    <h2 class="control-title">
+                        <i class="fas fa-th"></i> Photo Layout
+                    </h2>
+                    <div class="photo-count-buttons">
+                        <button class="count-btn active" data-count="1">Single</button>
+                        <button class="count-btn" data-count="3">3 Photos</button>
+                        <button class="count-btn" data-count="4">4 Photos</button>
+                        <button class="count-btn" data-count="6">6 Photos</button>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h2 class="control-title">
+                        <i class="fas fa-font"></i> Add Text to Photo
+                    </h2>
+                    <input type="text" class="text-input" id="photoText" placeholder="Enter text to display on your photos..." maxlength="30">
+                    <small style="color: #aaa; font-size: 0.9rem;">Text will appear at the bottom of each photo</small>
+                </div>
+                
+                <div class="control-group">
+                    <h2 class="control-title">
+                        <i class="fas fa-info-circle"></i> Instructions
+                    </h2>
+                    <ol style="padding-left: 20px; color: #ccc;">
+                        <li>Click "Start Camera" to activate your camera</li>
+                        <li>Select how many photos you want</li>
+                        <li>Add text if desired</li>
+                        <li>Take photos using the capture button</li>
+                        <li>Download your photo collage</li>
+                    </ol>
+                </div>
+            </section>
+            
+            <!-- Preview Section -->
+            <section class="preview-section">
+                <!-- Background decorations -->
+                <div class="background-decorations" id="backgroundDecorations"></div>
+                
+                <!-- Camera View (hidden by default) -->
+                <div class="camera-view" id="cameraView">
+                    <div class="camera-container">
+                        <video id="videoElement" autoplay playsinline></video>
+                    </div>
+                    <div class="camera-controls">
+                        <button class="capture-btn" id="captureBtn">
+                            <i class="fas fa-camera"></i> Capture Photo
+                        </button>
+                        <button class="back-btn" id="backBtn">
+                            <i class="fas fa-arrow-left"></i> Back to Preview
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Photo Preview (shown by default) -->
+                <div class="photo-preview-container">
+                    <div class="photo-preview" id="photoPreview">
+                        <div class="placeholder-text">
+                            <i class="fas fa-camera" style="font-size: 4rem; margin-bottom: 20px; color: #555;"></i>
+                            <p style="font-size: 1.2rem; color: #888;">Your photos will appear here</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Watermark -->
+                <div class="watermark">created by syafizam</div>
+                
+                <!-- Download Button -->
+                <button class="download-btn" id="downloadBtn">
+                    <i class="fas fa-download"></i> Download Photo Collage
+                </button>
+            </section>
         </div>
-    </div>
-
-    <!-- Result section -->
-    <div class="result-container" id="resultArea">
-        <h2 class="result-title">✧ HASIL FOTOSTORY ANDA ✧</h2>
-        <div class="strip-frame">
-            <canvas id="stripCanvas"></canvas>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>E-Photoboth &copy; 2023 | Take photos anywhere you want</p>
+            <p style="margin-top: 5px; font-size: 0.8rem;">Made with <i class="fas fa-heart" style="color: #ff4757;"></i> for memorable moments</p>
         </div>
-        <button class="dl-btn" id="dlBtn">
-            <span>📥 MUAT TURUN IMEJ HD</span>
-        </button>
-    </div>
-
-    <!-- Watermark -->
-    <div class="watermark">created with love by Syafizam ♥︎</div>
+    </footer>
 
     <script>
-        // Generate background decorative elements
-        const bgDecoration = document.getElementById('bgDecoration');
-        const symbols = ['✮', '♡', '♥︎', '✯', '✰', '♪', '♫', '♬', '★', '☆'];
+        // DOM Elements
+        const startCameraBtn = document.getElementById('startCameraBtn');
+        const cameraView = document.getElementById('cameraView');
+        const photoPreview = document.getElementById('photoPreview');
+        const captureBtn = document.getElementById('captureBtn');
+        const backBtn = document.getElementById('backBtn');
+        const videoElement = document.getElementById('videoElement');
+        const countButtons = document.querySelectorAll('.count-btn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const photoTextInput = document.getElementById('photoText');
+        const backgroundDecorations = document.getElementById('backgroundDecorations');
         
-        for (let i = 0; i < 40; i++) {
-            const element = document.createElement('div');
-            element.className = 'bg-element';
-            element.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-            element.style.left = `${Math.random() * 100}%`;
-            element.style.top = `${Math.random() * 100}%`;
-            element.style.fontSize = `${Math.random() * 25 + 15}px`;
-            element.style.animationDuration = `${Math.random() * 30 + 20}s`;
-            element.style.animationDelay = `${Math.random() * 5}s`;
-            bgDecoration.appendChild(element);
+        // State variables
+        let photoCount = 1;
+        let capturedPhotos = [];
+        let stream = null;
+        let photoText = '';
+        
+        // Generate random background decorations
+        function generateDecorations() {
+            const decorations = ['✮', '✰', '✯', '♡', '♥︎', '♫', '♬', '♪'];
+            backgroundDecorations.innerHTML = '';
+            
+            for (let i = 0; i < 15; i++) {
+                const decoration = document.createElement('div');
+                decoration.className = 'decoration-item';
+                decoration.textContent = decorations[Math.floor(Math.random() * decorations.length)];
+                decoration.style.left = `${Math.random() * 100}%`;
+                decoration.style.top = `${Math.random() * 100}%`;
+                decoration.style.fontSize = `${Math.random() * 20 + 20}px`;
+                decoration.style.transform = `rotate(${Math.random() * 360}deg)`;
+                backgroundDecorations.appendChild(decoration);
+            }
         }
-
-        // DOM elements
-        const video = document.getElementById('video');
-        const timerEl = document.getElementById('timer');
-        const snapBtn = document.getElementById('snap-btn');
-        const userText = document.getElementById('userText');
-        const resultArea = document.getElementById('resultArea');
-        const stripCanvas = document.getElementById('stripCanvas');
-        const dlBtn = document.getElementById('dlBtn');
-
-        let shotCount = 3;
-        let photos = [];
-        let isCapturing = false;
-
-        // Initialize front camera with high resolution
-        async function initCamera() {
+        
+        // Initialize background decorations
+        generateDecorations();
+        
+        // Photo count selection
+        countButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                countButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                photoCount = parseInt(button.dataset.count);
+                updatePhotoPreviewLayout();
+            });
+        });
+        
+        // Update photo preview layout based on selected count
+        function updatePhotoPreviewLayout() {
+            photoPreview.innerHTML = '';
+            
+            if (capturedPhotos.length === 0) {
+                // Show placeholder if no photos
+                const placeholder = document.createElement('div');
+                placeholder.className = 'placeholder-text';
+                placeholder.innerHTML = `
+                    <i class="fas fa-camera" style="font-size: 4rem; margin-bottom: 20px; color: #555;"></i>
+                    <p style="font-size: 1.2rem; color: #888;">Your photos will appear here</p>
+                `;
+                photoPreview.appendChild(placeholder);
+                return;
+            }
+            
+            // Calculate layout based on photo count
+            let cols, rows;
+            switch(photoCount) {
+                case 1:
+                    cols = 1; rows = 1;
+                    break;
+                case 3:
+                    cols = 3; rows = 1;
+                    break;
+                case 4:
+                    cols = 2; rows = 2;
+                    break;
+                case 6:
+                    cols = 3; rows = 2;
+                    break;
+                default:
+                    cols = 2; rows = 2;
+            }
+            
+            // Set grid styles
+            photoPreview.style.display = 'grid';
+            photoPreview.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            photoPreview.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+            photoPreview.style.gap = '5px';
+            photoPreview.style.width = '100%';
+            photoPreview.style.height = '100%';
+            
+            // Add captured photos to preview
+            for (let i = 0; i < photoCount; i++) {
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item';
+                
+                // Use captured photo or placeholder
+                if (i < capturedPhotos.length) {
+                    const img = document.createElement('img');
+                    img.src = capturedPhotos[i];
+                    photoItem.appendChild(img);
+                    
+                    // Add text if provided
+                    if (photoText) {
+                        const textOverlay = document.createElement('div');
+                        textOverlay.className = 'photo-text';
+                        textOverlay.textContent = photoText;
+                        photoItem.appendChild(textOverlay);
+                    }
+                } else {
+                    // Placeholder for future photos
+                    photoItem.style.backgroundColor = '#222';
+                    photoItem.style.display = 'flex';
+                    photoItem.style.alignItems = 'center';
+                    photoItem.style.justifyContent = 'center';
+                    
+                    const icon = document.createElement('i');
+                    icon.className = 'fas fa-user';
+                    icon.style.fontSize = '3rem';
+                    icon.style.color = '#444';
+                    photoItem.appendChild(icon);
+                }
+                
+                photoPreview.appendChild(photoItem);
+            }
+        }
+        
+        // Start camera
+        startCameraBtn.addEventListener('click', async () => {
             try {
-                const constraints = {
-                    video: {
-                        width: { ideal: 1920 },
-                        height: { ideal: 1080 },
-                        facingMode: "user" // Use front camera
-                    }
-                };
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: { 
+                        facingMode: 'user', // Front camera (selfie)
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                });
                 
-                const stream = await navigator.mediaDevices.getUserMedia(constraints);
-                video.srcObject = stream;
+                videoElement.srcObject = stream;
+                cameraView.classList.add('active');
+                photoPreview.style.display = 'none';
                 
-                // Ensure video plays
-                video.onloadedmetadata = () => {
-                    video.play();
-                };
             } catch (error) {
-                console.error("Error accessing camera:", error);
-                alert("Tidak dapat mengakses kamera. Sila pastikan anda memberikan kebenaran akses kamera.");
+                alert('Unable to access the camera. Please make sure you have granted camera permissions.');
+                console.error('Camera error:', error);
+            }
+        });
+        
+        // Capture photo
+        captureBtn.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            
+            const context = canvas.getContext('2d');
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            
+            // Convert to data URL and add to captured photos
+            const photoData = canvas.toDataURL('image/png');
+            capturedPhotos.push(photoData);
+            
+            // Update text from input
+            photoText = photoTextInput.value.trim();
+            
+            // Switch back to preview after capture
+            backToPreview();
+            
+            // Update preview
+            updatePhotoPreviewLayout();
+        });
+        
+        // Back to preview
+        backBtn.addEventListener('click', backToPreview);
+        
+        function backToPreview() {
+            cameraView.classList.remove('active');
+            photoPreview.style.display = 'grid';
+            
+            // Stop camera stream
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
             }
         }
-
-        // Set photo count
-        function setCount(n) {
-            shotCount = n;
-            document.querySelectorAll('.opt-btn').forEach(b => {
-                b.classList.toggle('active', b.innerText.includes(n.toString()));
-            });
-        }
-
-        // Capture photos
-        snapBtn.onclick = async () => {
-            if (isCapturing) return;
+        
+        // Download photo collage
+        downloadBtn.addEventListener('click', () => {
+            if (capturedPhotos.length === 0) {
+                alert('Please take at least one photo before downloading.');
+                return;
+            }
             
-            photos = [];
-            resultArea.style.display = 'none';
-            snapBtn.disabled = true;
-            isCapturing = true;
+            // Create a temporary canvas for the collage
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
             
-            // Change button text during capture
-            const originalText = snapBtn.innerHTML;
-            snapBtn.innerHTML = "SEDANG MENGAMBIL GAMBAR...";
-
-            for (let i = 0; i < shotCount; i++) {
-                // Show countdown timer
-                timerEl.style.display = 'block';
-                for (let c = 3; c > 0; c--) {
-                    timerEl.innerText = c;
-                    await new Promise(r => setTimeout(r, 1000));
+            // Set canvas size based on photo count
+            let collageWidth, collageHeight;
+            
+            switch(photoCount) {
+                case 1:
+                    collageWidth = 800;
+                    collageHeight = 600;
+                    break;
+                case 3:
+                    collageWidth = 1200;
+                    collageHeight = 400;
+                    break;
+                case 4:
+                    collageWidth = 800;
+                    collageHeight = 800;
+                    break;
+                case 6:
+                    collageWidth = 900;
+                    collageHeight = 600;
+                    break;
+                default:
+                    collageWidth = 800;
+                    collageHeight = 800;
+            }
+            
+            canvas.width = collageWidth;
+            canvas.height = collageHeight + 100; // Extra space for watermark
+            
+            // Fill background
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw decorations
+            const decorations = ['✮', '✰', '✯', '♡', '♥︎', '♫', '♬', '♪'];
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+            ctx.font = '30px Arial';
+            
+            for (let i = 0; i < 20; i++) {
+                const decoration = decorations[Math.floor(Math.random() * decorations.length)];
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                ctx.fillText(decoration, x, y);
+            }
+            
+            // Draw photos in grid
+            const cols = photoCount === 3 ? 3 : (photoCount <= 2 ? photoCount : Math.ceil(photoCount / 2));
+            const rows = photoCount <= 3 ? 1 : Math.ceil(photoCount / cols);
+            
+            const photoWidth = collageWidth / cols;
+            const photoHeight = collageHeight / rows;
+            
+            for (let i = 0; i < photoCount; i++) {
+                const col = i % cols;
+                const row = Math.floor(i / cols);
+                const x = col * photoWidth;
+                const y = row * photoHeight;
+                
+                // Draw photo border
+                ctx.fillStyle = '#333';
+                ctx.fillRect(x, y, photoWidth, photoHeight);
+                
+                // Draw actual photo if available
+                if (i < capturedPhotos.length) {
+                    const img = new Image();
+                    img.onload = () => {
+                        ctx.drawImage(img, x + 5, y + 5, photoWidth - 10, photoHeight - 10);
+                        
+                        // Draw text if provided
+                        if (photoText) {
+                            ctx.fillStyle = '#ffffff';
+                            ctx.font = 'bold 24px Poppins';
+                            ctx.textAlign = 'center';
+                            ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
+                            ctx.shadowBlur = 4;
+                            ctx.fillText(photoText, x + photoWidth/2, y + photoHeight - 20);
+                            ctx.shadowBlur = 0;
+                        }
+                        
+                        // If this is the last image, trigger download
+                        if (i === Math.min(photoCount - 1, capturedPhotos.length - 1)) {
+                            setTimeout(() => {
+                                // Add watermark
+                                ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                                ctx.font = 'italic 20px Poppins';
+                                ctx.textAlign = 'right';
+                                ctx.fillText('created by syafizam', canvas.width - 20, canvas.height - 40);
+                                
+                                // Add title
+                                ctx.fillStyle = '#ffffff';
+                                ctx.font = 'bold 36px Playfair Display';
+                                ctx.textAlign = 'center';
+                                ctx.fillText('E-Photoboth', canvas.width/2, canvas.height - 80);
+                                
+                                // Trigger download
+                                const link = document.createElement('a');
+                                link.download = `e-photoboth-${new Date().getTime()}.png`;
+                                link.href = canvas.toDataURL('image/png');
+                                link.click();
+                            }, 100);
+                        }
+                    };
+                    img.src = capturedPhotos[i];
+                } else {
+                    // Draw placeholder for missing photos
+                    ctx.fillStyle = '#222';
+                    ctx.fillRect(x + 5, y + 5, photoWidth - 10, photoHeight - 10);
+                    
+                    // Draw placeholder icon
+                    ctx.fillStyle = '#444';
+                    ctx.font = 'bold 48px FontAwesome';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('', x + photoWidth/2, y + photoHeight/2);
                 }
-                timerEl.style.display = 'none';
-
-                // Capture frame from video
-                const tempCanvas = document.createElement('canvas');
-                tempCanvas.width = video.videoWidth;
-                tempCanvas.height = video.videoHeight;
-                const ctx = tempCanvas.getContext('2d');
-                
-                // Mirror image for front camera
-                ctx.translate(tempCanvas.width, 0);
-                ctx.scale(-1, 1);
-                ctx.drawImage(video, 0, 0, tempCanvas.width, tempCanvas.height);
-                
-                // Add to photos array with high quality
-                photos.push(tempCanvas.toDataURL('image/jpeg', 0.95));
-                
-                // Brief pause between shots
-                await new Promise(r => setTimeout(r, 500));
             }
-            
-            // Restore button text and enable it
-            snapBtn.innerHTML = originalText;
-            snapBtn.disabled = false;
-            isCapturing = false;
-            
-            // Draw the final strip
-            drawStrip();
-        };
-
-        // Draw the photo strip
-        function drawStrip() {
-            const ctx = stripCanvas.getContext('2d');
-            const padding = 40;
-            const spacing = 30;
-            const headerHeight = 180;
-            const footerHeight = 120;
-            
-            // Calculate image dimensions (maintain aspect ratio)
-            const imgWidth = 700;
-            const imgHeight = 500;
-            
-            // Set canvas dimensions
-            stripCanvas.width = imgWidth + (padding * 2);
-            stripCanvas.height = headerHeight + (imgHeight * shotCount) + (spacing * (shotCount - 1)) + footerHeight + padding;
-            
-            // Draw black background with subtle pattern
-            ctx.fillStyle = "#0a0a0e";
-            ctx.fillRect(0, 0, stripCanvas.width, stripCanvas.height);
-            
-            // Add decorative background pattern
-            ctx.fillStyle = "rgba(255, 255, 255, 0.02)";
-            ctx.font = "30px Arial";
-            ctx.textAlign = "center";
-            
-            for (let i = 0; i < 10; i++) {
-                for (let j = 0; j < 5; j++) {
-                    const symbol = symbols[Math.floor(Math.random() * symbols.length)];
-                    ctx.fillText(symbol, i * 80 + 40, j * 100 + 50);
-                }
-            }
-            
-            // Draw header with user text
-            const title = userText.value || "Momen Manis Bersamamu ♥︎";
-            
-            // Draw decorative header background
-            ctx.fillStyle = "rgba(255, 121, 198, 0.1)";
-            roundRect(ctx, padding/2, 20, stripCanvas.width - padding, headerHeight - 40, 25);
-            ctx.fill();
-            
-            // Draw title
-            ctx.fillStyle = "#ff79c6";
-            ctx.font = "bold 42px 'Dancing Script', cursive";
-            ctx.textAlign = "center";
-            ctx.fillText(title, stripCanvas.width / 2, 90);
-            
-            // Draw subtitle
-            ctx.fillStyle = "#bd93f9";
-            ctx.font = "24px 'Poppins', sans-serif";
-            ctx.fillText("✮♡♥︎♪♫♬✯✰", stripCanvas.width / 2, 140);
-            
-            // Draw each photo
-            let loadedImages = 0;
-            
-            photos.forEach((src, index) => {
-                const img = new Image();
-                img.onload = () => {
-                    const yPos = headerHeight + (index * (imgHeight + spacing));
-                    
-                    // Draw photo with rounded corners and border
-                    ctx.save();
-                    
-                    // Create rounded clipping path
-                    roundRect(ctx, padding, yPos, imgWidth, imgHeight, 25);
-                    ctx.clip();
-                    
-                    // Draw the image
-                    ctx.drawImage(img, padding, yPos, imgWidth, imgHeight);
-                    ctx.restore();
-                    
-                    // Add decorative border
-                    ctx.strokeStyle = "rgba(255, 121, 198, 0.5)";
-                    ctx.lineWidth = 4;
-                    roundRect(ctx, padding, yPos, imgWidth, imgHeight, 25);
-                    ctx.stroke();
-                    
-                    // Add decorative corner elements
-                    ctx.fillStyle = "#ff79c6";
-                    ctx.font = "36px Arial";
-                    ctx.fillText("♥︎", padding + 30, yPos + 50);
-                    ctx.fillText("✮", padding + imgWidth - 30, yPos + imgHeight - 20);
-                    
-                    // Add individual watermark for each image
-                    ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
-                    ctx.font = "italic 16px 'Poppins', sans-serif";
-                    ctx.fillText("created by syafizam", padding + imgWidth - 120, yPos + imgHeight - 25);
-                    
-                    loadedImages++;
-                    
-                    // When all images are loaded, show result and add footer
-                    if (loadedImages === shotCount) {
-                        // Draw footer
-                        ctx.fillStyle = "rgba(189, 147, 249, 0.1)";
-                        roundRect(ctx, padding/2, stripCanvas.height - footerHeight + 20, stripCanvas.width - padding, footerHeight - 40, 25);
-                        ctx.fill();
-                        
-                        // Draw footer text
-                        ctx.fillStyle = "#bd93f9";
-                        ctx.font = "italic 20px 'Poppins', sans-serif";
-                        ctx.textAlign = "center";
-                        ctx.fillText("Kenangan ini akan kekal abadi di hati", stripCanvas.width / 2, stripCanvas.height - 60);
-                        
-                        ctx.fillStyle = "#ff79c6";
-                        ctx.font = "bold 24px 'Dancing Script', cursive";
-                        ctx.fillText("Syafizam Photobooth Premium", stripCanvas.width / 2, stripCanvas.height - 30);
-                        
-                        // Show result area
-                        resultArea.style.display = 'flex';
-                        window.scrollTo({
-                            top: resultArea.offsetTop - 50,
-                            behavior: 'smooth'
-                        });
-                    }
-                };
-                img.src = src;
-            });
-        }
-
-        // Helper function for rounded rectangles
-        function roundRect(ctx, x, y, width, height, radius) {
-            ctx.beginPath();
-            ctx.moveTo(x + radius, y);
-            ctx.lineTo(x + width - radius, y);
-            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-            ctx.lineTo(x + width, y + height - radius);
-            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-            ctx.lineTo(x + radius, y + height);
-            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-            ctx.lineTo(x, y + radius);
-            ctx.quadraticCurveTo(x, y, x + radius, y);
-            ctx.closePath();
-        }
-
-        // Download functionality
-        dlBtn.onclick = () => {
-            const link = document.createElement('a');
-            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-            link.download = `Syafizam_Photobooth_${timestamp}.png`;
-            link.href = stripCanvas.toDataURL('image/png', 1.0);
-            link.click();
-            
-            // Show temporary feedback
-            const originalText = dlBtn.innerHTML;
-            dlBtn.innerHTML = "✓ BERJAYA DIMUAT TURUN!";
-            dlBtn.style.background = "linear-gradient(45deg, #37d67a, #50fa7b)";
-            
-            setTimeout(() => {
-                dlBtn.innerHTML = originalText;
-                dlBtn.style.background = "linear-gradient(45deg, #50fa7b, #37d67a)";
-            }, 2000);
-        };
-
-        // Initialize camera when page loads
-        window.addEventListener('DOMContentLoaded', initCamera);
+        });
+        
+        // Initialize with one photo layout
+        updatePhotoPreviewLayout();
+        
+        // Add text input event listener
+        photoTextInput.addEventListener('input', () => {
+            photoText = photoTextInput.value.trim();
+            updatePhotoPreviewLayout();
+        });
     </script>
 </body>
-</html>
+    </html>
