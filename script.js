@@ -16,7 +16,7 @@ var container = document.querySelector(".container");
 var selectedFrames = 4;
 var selectedFilter = "none";
 var selectedTemplate = "classic";
-var selectedDecoration = "none";
+var selectedDecoration = "graduation";
 var selectedBackground = "black";
 var capturedPhotos = [];
 var currentPhotoIndex = null;
@@ -300,7 +300,7 @@ function createStoryGrid(photos) {
             topPadding: 50,
             horizontalSpacing: 0,
             verticalSpacing: 30,
-            footerHeight: 120,  // Increased footer height
+            footerHeight: 160,  // Increased footer height for graduation text
             bottomPadding: 40   // Extra space at bottom
         };
     } else if (photoCount === 6) {
@@ -314,7 +314,7 @@ function createStoryGrid(photos) {
             topPadding: 50,
             horizontalSpacing: 20,
             verticalSpacing: 20,
-            footerHeight: 120,  // Increased footer height
+            footerHeight: 160,  // Increased footer height for graduation text
             bottomPadding: 40   // Extra space at bottom
         };
     }
@@ -401,19 +401,121 @@ function createStoryGrid(photos) {
     drawTemplateFooter(ctx);
 }
 
+// Helper to draw images with rounded corners
+function drawRoundedImage(ctx, img, x, y, width, height, radius) {
+    ctx.save();
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(img, x, y, width, height);
+    ctx.restore();
+}
+
+// Preload logos for canvas
+var bossLogo = new Image();
+bossLogo.src = 'logo/BOSS%20LOGO.png';
+var bossLogoLoaded = false;
+bossLogo.onload = function() {
+    bossLogoLoaded = true;
+};
+
+var pustemLogo = new Image();
+pustemLogo.src = 'logo/pustem.png';
+var pustemLogoLoaded = false;
+pustemLogo.onload = function() {
+    pustemLogoLoaded = true;
+};
+
 // Draw Template Footer
 function drawTemplateFooter(ctx) {
     const bgColor = backgroundColors[selectedBackground] || '#000000';
     const isLight = selectedBackground === 'white';
     const textColor = isLight ? '#333333' : '#FFFFFF';
+    const goldColor = '#F2CA46';
     
-    // Position footer closer to bottom with proper spacing from photos
-    const footerY = previewCanvas.height - 30; // 30px from bottom
+    const footerBaseY = previewCanvas.height - 105;
     
-    ctx.fillStyle = textColor;
-    ctx.font = '500 20px "Inter", sans-serif';
+    // Text lines
+    const line1 = "Tahniah!";
+    const line2 = "Graduation PUSTEM 2025";
+    const line3 = "\"Kejayaan bermula dari sini!\" ✨";
+    const line4 = "Created by Syafizam 🎧";
+    
+    // Measure max text width
+    ctx.font = 'bold 36px "Great Vibes", cursive';
+    const w1 = ctx.measureText(line1).width;
+    ctx.font = '600 18px "Inter", sans-serif';
+    const w2 = ctx.measureText(line2).width;
+    ctx.font = 'italic 13px "Inter", sans-serif';
+    const w3 = ctx.measureText(line3).width;
+    ctx.font = '400 11px "Inter", sans-serif';
+    const w4 = ctx.measureText(line4).width;
+    
+    const maxTextWidth = Math.max(w1, w2, w3, w4);
+    
+    const bossLogoSize = 145; // Extra large BOSS logo
+    const pustemLogoSize = 130; // 130px PUSTEM logo
+    const gap = 14;
+    
+    let textCenterX = previewCanvas.width / 2;
+    
+    const hasBoss = bossLogoLoaded;
+    const hasPustem = pustemLogoLoaded;
+    
+    if (hasBoss || hasPustem) {
+        const leftWidth = hasBoss ? (bossLogoSize + gap) : 0;
+        const rightWidth = hasPustem ? (gap + pustemLogoSize) : 0;
+        const totalBlockWidth = leftWidth + maxTextWidth + rightWidth;
+        
+        const startX = (previewCanvas.width - totalBlockWidth) / 2;
+        
+        // Draw BOSS Logo on LEFT (Extra Large 145px)
+        if (hasBoss) {
+            const bossLogoY = footerBaseY - 48;
+            drawRoundedImage(ctx, bossLogo, startX, bossLogoY, bossLogoSize, bossLogoSize, 16);
+        }
+        
+        textCenterX = startX + leftWidth + (maxTextWidth / 2);
+        
+        // Draw PUSTEM Logo on RIGHT (130px)
+        if (hasPustem) {
+            const pustemX = startX + leftWidth + maxTextWidth + gap;
+            const pustemLogoY = footerBaseY - 40;
+            drawRoundedImage(ctx, pustemLogo, pustemX, pustemLogoY, pustemLogoSize, pustemLogoSize, 14);
+        }
+    }
+    
+    // Draw "Tahniah!" title
+    ctx.fillStyle = goldColor;
+    ctx.font = 'bold 36px "Great Vibes", cursive';
     ctx.textAlign = 'center';
-    ctx.fillText("Created by Syafizam🎧", previewCanvas.width / 2, footerY);
+    ctx.fillText(line1, textCenterX, footerBaseY);
+    
+    // Draw graduation subtitle
+    ctx.fillStyle = textColor;
+    ctx.font = '600 18px "Inter", sans-serif';
+    ctx.fillText(line2, textCenterX, footerBaseY + 28);
+    
+    // Draw motivational quote
+    ctx.fillStyle = isLight ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.6)';
+    ctx.font = 'italic 13px "Inter", sans-serif';
+    ctx.fillText(line3, textCenterX, footerBaseY + 50);
+    
+    // Draw credit
+    ctx.fillStyle = isLight ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.35)';
+    ctx.font = '400 11px "Inter", sans-serif';
+    ctx.fillText(line4, textCenterX, footerBaseY + 70);
 }
 
 // Draw Background
@@ -518,6 +620,24 @@ function addDecorations(ctx, photoCount) {
             for (let i = 0; i < spiderCount; i++) {
                 const symbol = spiderSymbols[i % spiderSymbols.length];
                 const fontSize = symbol === "✮" ? 32 : 28;
+                ctx.font = `${fontSize}px Arial`;
+                
+                let x = 20 + Math.random() * (previewCanvas.width - 40);
+                let y = 40 + Math.random() * (canvasHeight - 80);
+                
+                ctx.fillText(symbol, x, y);
+            }
+            break;
+            
+        case "graduation":
+            // Graduation theme: 🎓, ⭐, ✨ scattered
+            ctx.fillStyle = 'rgba(242, 202, 70, 0.25)';
+            const gradSymbols = ["🎓", "⭐", "✨", "🌟", "🎉"];
+            const gradCount = 20;
+            
+            for (let i = 0; i < gradCount; i++) {
+                const symbol = gradSymbols[i % gradSymbols.length];
+                const fontSize = symbol === "🎓" ? 30 : 24;
                 ctx.font = `${fontSize}px Arial`;
                 
                 let x = 20 + Math.random() * (previewCanvas.width - 40);
