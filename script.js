@@ -449,7 +449,7 @@ function drawTemplateFooter(ctx) {
     // Text lines
     const line1 = "Tahniah!";
     const line2 = "Graduation PUSTEM 2025";
-    const line3 = "\"Kejayaan bermula dari sini!\" ✨";
+    const line3 = "\"A Step To Varsity" \" ✨";
     const line4 = "Created by Syafizam 🎧";
     
     // Measure max text width
