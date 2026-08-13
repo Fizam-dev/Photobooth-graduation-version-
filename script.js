@@ -33,22 +33,56 @@ const backgroundColors = {
     'midnight': '#191970'
 };
 
-// Initialize Camera
-navigator.mediaDevices.getUserMedia({ 
-    video: { 
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
-    } 
-}).then((stream) => {
-    video.srcObject = stream;
-    video.onloadedmetadata = () => {
-        overlayCanvas.width = video.videoWidth;
-        overlayCanvas.height = video.videoHeight;
+// Initialize Camera with robust fallbacks and mobile support
+function initCamera() {
+    // Check HTTPS on hosted sites
+    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        alert("Perhatian: Kamera memerlukan sambungan selamat (HTTPS) bila di-host secara dalam talian!");
+    }
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert("Pelayar anda tidak menyokong akses kamera.");
+        return;
+    }
+
+    const constraints = {
+        video: { 
+            facingMode: "user",
+            width: { ideal: 1280, min: 640 },
+            height: { ideal: 720, min: 480 }
+        },
+        audio: false
     };
-}).catch((err) => {
-    console.error("Camera error:", err);
-    alert("Tidak bisa mengakses kamera. Pastikan kamera diizinkan!");
-});
+
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream) => {
+            handleStreamSuccess(stream);
+        })
+        .catch((err) => {
+            console.warn("Retrying with simple video constraints due to error:", err);
+            // Fallback for devices with strict constraint limits
+            navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+                .then((stream) => {
+                    handleStreamSuccess(stream);
+                })
+                .catch((fallbackErr) => {
+                    console.error("Camera access failed completely:", fallbackErr);
+                    alert("Tidak dapat mengakses kamera. Pastikan kebenaran kamera (Camera Permission) telah diizinkan dan laman web menggunakan HTTPS!");
+                });
+        });
+}
+
+function handleStreamSuccess(stream) {
+    video.srcObject = stream;
+    video.play().catch(e => console.log("Video play stream:", e));
+    video.onloadedmetadata = () => {
+        overlayCanvas.width = video.videoWidth || 1280;
+        overlayCanvas.height = video.videoHeight || 720;
+    };
+}
+
+// Start camera on page load
+initCamera();
 
 // Frame Selection
 document.querySelectorAll('.frame-btn').forEach(btn => {
